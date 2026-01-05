@@ -1,0 +1,75 @@
+{
+  "app": {
+    "name": "TimeStack",
+    "loading": "Загрузка..."
+  },
+  "nav": {
+    "calendar": "Календарь",
+    "list": "Список",
+    "today": "Сегодня"
+  },
+  "task": {
+    "new": "Новая задача",
+    "edit": "Редактировать задачу",
+    "delete": "Удалить задачу",
+    "title": "Название",
+    "titlePlaceholder": "Введите название задачи",
+    "description": "Описание",
+    "descriptionPlaceholder": "Добавьте описание (необязательно)",
+    "date": "Дата",
+    "priority": "Приоритет",
+    "color": "Цвет",
+    "estimatedTime": "Планируемое время",
+    "actualTime": "Фактическое время",
+    "minutes": "мин",
+    "status": {
+      "open": "Открыта",
+      "completed": "Выполнена"
+    },
+    "priorities": {
+      "low": "Низкий",
+      "normal": "Обычный",
+      "high": "Высокий",
+      "critical": "Критичный"
+    },
+    "colors": {
+      "gray": "Серый",
+      "red": "Красный",
+      "orange": "Оранжевый",
+      "yellow": "Жёлтый",
+      "green": "Зелёный",
+      "blue": "Синий",
+      "purple": "Фиолетовый",
+      "pink": "Розовый"
+    },
+    "empty": "Нет задач на этот день",
+    "addFirst": "Добавьте первую задачу"
+  },
+  "filter": {
+    "all": "Все",
+    "status": "Статус",
+    "priority": "Приоритет",
+    "open": "Открытые",
+    "completed": "Выполненные"
+  },
+  "actions": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "confirm": "Подтвердить"
+  },
+  "confirm": {
+    "deleteTask": "Вы уверены, что хотите удалить эту задачу?",
+    "deleteTitle": "Удаление задачи"
+  },
+  "calendar": {
+    "month": "Месяц",
+    "week": "Неделя",
+    "day": "День",
+    "agenda": "Повестка"
+  },
+  "settings": {
+    "language": "Язык",
+    "theme": "Тема"
+  }
+}

@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+body {
+  @apply bg-gray-50 text-gray-900 antialiased;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  @apply h-screen w-screen flex flex-col;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* React Big Calendar overrides */
+.rbc-calendar {
+  @apply bg-white rounded-lg;
+  font-family: inherit;
+}
+
+.rbc-header {
+  @apply py-2 font-semibold text-gray-600 border-gray-200;
+}
+
+.rbc-today {
+  @apply bg-blue-50;
+}
+
+.rbc-off-range-bg {
+  @apply bg-gray-50;
+}
+
+.rbc-event {
+  @apply rounded px-2 py-1 text-sm border-0;
+}
+
+.rbc-toolbar {
+  @apply mb-4 flex-wrap gap-2;
+}
+
+.rbc-toolbar button {
+  @apply px-3 py-1.5 rounded-md border border-gray-200 bg-white text-gray-900 transition-colors;
+}
+
+.rbc-toolbar button:hover {
+  @apply bg-gray-50;
+}
+
+.rbc-toolbar button.rbc-active {
+  @apply bg-blue-500 text-white border-blue-500;
+}
+
+.rbc-month-view,
+.rbc-time-view {
+  @apply border border-gray-200 rounded-lg overflow-hidden;
+}
+
+.rbc-day-bg + .rbc-day-bg,
+.rbc-month-row + .rbc-month-row {
+  @apply border-gray-200;
+}
+
+.rbc-header + .rbc-header {
+  @apply border-gray-200;
+}
+
+.rbc-time-header-content {
+  @apply border-gray-200;
+}
+
+.rbc-time-content {
+  @apply border-gray-200;
+}
+
+.rbc-timeslot-group {
+  @apply border-gray-200;
+}
+
+.rbc-time-slot {
+  @apply border-gray-100;
+}
+
+.rbc-date-cell {
+  @apply text-right pr-2 pt-1;
+}
+
+.rbc-date-cell.rbc-now {
+  @apply font-bold;
+}
+
+.rbc-show-more {
+  @apply text-blue-500 text-xs font-medium;
+}

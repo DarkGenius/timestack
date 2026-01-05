@@ -1,0 +1,75 @@
+{
+  "app": {
+    "name": "TimeStack",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "calendar": "Calendar",
+    "list": "List",
+    "today": "Today"
+  },
+  "task": {
+    "new": "New Task",
+    "edit": "Edit Task",
+    "delete": "Delete Task",
+    "title": "Title",
+    "titlePlaceholder": "Enter task title",
+    "description": "Description",
+    "descriptionPlaceholder": "Add description (optional)",
+    "date": "Date",
+    "priority": "Priority",
+    "color": "Color",
+    "estimatedTime": "Estimated Time",
+    "actualTime": "Actual Time",
+    "minutes": "min",
+    "status": {
+      "open": "Open",
+      "completed": "Completed"
+    },
+    "priorities": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "colors": {
+      "gray": "Gray",
+      "red": "Red",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink"
+    },
+    "empty": "No tasks for this day",
+    "addFirst": "Add your first task"
+  },
+  "filter": {
+    "all": "All",
+    "status": "Status",
+    "priority": "Priority",
+    "open": "Open",
+    "completed": "Completed"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "confirm": {
+    "deleteTask": "Are you sure you want to delete this task?",
+    "deleteTitle": "Delete Task"
+  },
+  "calendar": {
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "agenda": "Agenda"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme"
+  }
+}
