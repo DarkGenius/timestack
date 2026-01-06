@@ -21,12 +21,13 @@ export function createTask(input: CreateTaskInput): Task {
     created_at: now,
     updated_at: now,
     deleted_at: null,
-    sync_status: 'pending'
+    sync_status: 'pending',
+    moved_from_date: null
   }
 
   const stmt = db.prepare(`
-    INSERT INTO tasks (id, title, description, date, priority, color, estimated_time, actual_time, status, completed_at, created_at, updated_at, deleted_at, sync_status)
-    VALUES (@id, @title, @description, @date, @priority, @color, @estimated_time, @actual_time, @status, @completed_at, @created_at, @updated_at, @deleted_at, @sync_status)
+    INSERT INTO tasks (id, title, description, date, priority, color, estimated_time, actual_time, status, completed_at, created_at, updated_at, deleted_at, sync_status, moved_from_date)
+    VALUES (@id, @title, @description, @date, @priority, @color, @estimated_time, @actual_time, @status, @completed_at, @created_at, @updated_at, @deleted_at, @sync_status, @moved_from_date)
   `)
 
   stmt.run(task)
@@ -57,6 +58,11 @@ export function updateTask(id: string, updates: UpdateTaskInput): Task | null {
     updated.completed_at = null
   }
 
+  // If date is changed, update moved_from_date
+  if (updates.date && updates.date !== current.date) {
+    updated.moved_from_date = current.date
+  }
+
   const stmt = db.prepare(`
     UPDATE tasks SET
       title = @title,
@@ -69,7 +75,8 @@ export function updateTask(id: string, updates: UpdateTaskInput): Task | null {
       status = @status,
       completed_at = @completed_at,
       updated_at = @updated_at,
-      sync_status = @sync_status
+      sync_status = @sync_status,
+      moved_from_date = @moved_from_date
     WHERE id = @id
   `)
 

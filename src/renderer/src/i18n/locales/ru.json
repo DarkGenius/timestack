@@ -50,7 +50,8 @@
     "completedCount_one": "{{count}} выполнена",
     "completedCount_few": "{{count}} выполнены",
     "completedCount_many": "{{count}} выполнено",
-    "moveToNextDay": "Перенести на следующий день"
+    "moveToNextDay": "Перенести на следующий день",
+    "movedFrom": "Перенесено с {{date}}"
   },
   "filter": {
     "all": "Все",

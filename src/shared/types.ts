@@ -43,6 +43,7 @@ export interface Task {
   updated_at: string // ISO 8601 timestamp
   deleted_at: string | null // ISO 8601 timestamp (soft delete)
   sync_status: SyncStatus
+  moved_from_date: string | null // ISO 8601 date (YYYY-MM-DD)
 }
 
 // Input for creating a new task
@@ -65,6 +66,7 @@ export interface UpdateTaskInput {
   estimated_time?: number | null
   actual_time?: number | null
   status?: TaskStatus
+  moved_from_date?: string | null
 }
 
 // Filters for querying tasks

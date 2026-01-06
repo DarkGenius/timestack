@@ -88,6 +88,7 @@ User Action → React Component → Zustand Store → IPC (preload) → Main Pro
 - `completed_at` (TEXT) - ISO timestamp
 - `created_at`, `updated_at`, `deleted_at` (TEXT)
 - `sync_status` (TEXT) - For future S3 sync
+- `moved_from_date` (TEXT) - ISO date of the last day this task was moved from
 
 ## Common Tasks
 

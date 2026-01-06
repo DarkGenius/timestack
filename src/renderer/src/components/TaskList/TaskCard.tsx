@@ -106,7 +106,7 @@ function TaskCard({ task }: TaskCardProps): React.JSX.Element {
           )}
 
           {/* Time info */}
-          {(task.estimated_time || task.actual_time) && (
+          <div className="flex items-center justify-between mt-2">
             <div className="flex gap-4 text-xs text-gray-500">
               {task.estimated_time && (
                 <span className="flex items-center gap-1">
@@ -135,7 +135,18 @@ function TaskCard({ task }: TaskCardProps): React.JSX.Element {
                 </span>
               )}
             </div>
-          )}
+
+            {task.moved_from_date && (
+              <span
+                className="text-[10px] text-gray-500 italic opacity-80"
+                title={task.moved_from_date}
+              >
+                {t('task.movedFrom', {
+                  date: task.moved_from_date.split('-').reverse().slice(0, 2).join('.')
+                })}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
