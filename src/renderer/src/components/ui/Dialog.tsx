@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 interface DialogProps {
   open: boolean
@@ -23,9 +23,9 @@ interface DialogFooterProps {
   children: ReactNode
 }
 
-function Dialog({ open, onClose, children }: DialogProps) {
+function Dialog({ open, onClose, children }: DialogProps): React.JSX.Element | null {
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleEscape = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') onClose()
     }
 
@@ -34,7 +34,7 @@ function Dialog({ open, onClose, children }: DialogProps) {
       document.body.style.overflow = 'hidden'
     }
 
-    return () => {
+    return (): void => {
       document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = 'unset'
     }
@@ -55,23 +55,19 @@ function Dialog({ open, onClose, children }: DialogProps) {
   )
 }
 
-function DialogContent({ children, className = '' }: DialogContentProps) {
-  return (
-    <div className={`bg-white rounded-xl shadow-xl p-6 ${className}`}>
-      {children}
-    </div>
-  )
+function DialogContent({ children, className = '' }: DialogContentProps): React.JSX.Element {
+  return <div className={`bg-white rounded-xl shadow-xl p-6 ${className}`}>{children}</div>
 }
 
-function DialogHeader({ children }: DialogHeaderProps) {
+function DialogHeader({ children }: DialogHeaderProps): React.JSX.Element {
   return <div className="mb-4">{children}</div>
 }
 
-function DialogTitle({ children }: DialogTitleProps) {
+function DialogTitle({ children }: DialogTitleProps): React.JSX.Element {
   return <h2 className="text-xl font-semibold text-gray-900">{children}</h2>
 }
 
-function DialogFooter({ children }: DialogFooterProps) {
+function DialogFooter({ children }: DialogFooterProps): React.JSX.Element {
   return <div className="mt-6 flex justify-end gap-3">{children}</div>
 }
 

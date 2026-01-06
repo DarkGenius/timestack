@@ -1,6 +1,12 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { CreateTaskInput, UpdateTaskInput, TaskFilters, ApiResponse, Task } from '../shared/types'
+import type {
+  CreateTaskInput,
+  UpdateTaskInput,
+  TaskFilters,
+  ApiResponse,
+  Task
+} from '../shared/types'
 
 // Tasks API for renderer
 const tasksAPI = {
@@ -10,11 +16,9 @@ const tasksAPI = {
   update: (id: string, updates: UpdateTaskInput): Promise<ApiResponse<Task>> =>
     ipcRenderer.invoke('tasks:update', id, updates),
 
-  delete: (id: string): Promise<ApiResponse<boolean>> =>
-    ipcRenderer.invoke('tasks:delete', id),
+  delete: (id: string): Promise<ApiResponse<boolean>> => ipcRenderer.invoke('tasks:delete', id),
 
-  getById: (id: string): Promise<ApiResponse<Task>> =>
-    ipcRenderer.invoke('tasks:getById', id),
+  getById: (id: string): Promise<ApiResponse<Task>> => ipcRenderer.invoke('tasks:getById', id),
 
   getByDate: (date: string): Promise<ApiResponse<Task[]>> =>
     ipcRenderer.invoke('tasks:getByDate', date),
@@ -25,11 +29,9 @@ const tasksAPI = {
   filter: (filters: TaskFilters): Promise<ApiResponse<Task[]>> =>
     ipcRenderer.invoke('tasks:filter', filters),
 
-  toggle: (id: string): Promise<ApiResponse<Task>> =>
-    ipcRenderer.invoke('tasks:toggle', id),
+  toggle: (id: string): Promise<ApiResponse<Task>> => ipcRenderer.invoke('tasks:toggle', id),
 
-  getAll: (): Promise<ApiResponse<Task[]>> =>
-    ipcRenderer.invoke('tasks:getAll')
+  getAll: (): Promise<ApiResponse<Task[]>> => ipcRenderer.invoke('tasks:getAll')
 }
 
 // Custom APIs for renderer

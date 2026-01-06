@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import type { TaskPriority } from '../../../../shared/types'
 
 interface BadgeProps {
@@ -15,7 +15,12 @@ const priorityColors: Record<TaskPriority, string> = {
   critical: 'bg-red-100 text-red-800'
 }
 
-function Badge({ children, variant = 'default', priority, className = '' }: BadgeProps) {
+function Badge({
+  children,
+  variant = 'default',
+  priority,
+  className = ''
+}: BadgeProps): React.JSX.Element {
   const baseStyles = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium'
 
   let colorStyles = 'bg-gray-100 text-gray-800'

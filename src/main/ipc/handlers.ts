@@ -10,7 +10,7 @@ import {
   toggleTaskStatus,
   getAllTasks
 } from '../database/queries'
-import type { CreateTaskInput, UpdateTaskInput, TaskFilters, ApiResponse, Task } from '../../shared/types'
+import type { CreateTaskInput, UpdateTaskInput, TaskFilters, ApiResponse } from '../../shared/types'
 
 function wrapResponse<T>(fn: () => T): ApiResponse<T> {
   try {

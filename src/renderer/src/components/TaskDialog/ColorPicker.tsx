@@ -1,3 +1,4 @@
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TASK_COLORS } from '../../../../shared/types'
 
@@ -6,15 +7,13 @@ interface ColorPickerProps {
   onChange: (color: string) => void
 }
 
-function ColorPicker({ value, onChange }: ColorPickerProps) {
+function ColorPicker({ value, onChange }: ColorPickerProps): React.JSX.Element {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'ru' | 'en'
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {t('task.color')}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{t('task.color')}</label>
       <div className="flex flex-wrap gap-2">
         {TASK_COLORS.map((color) => (
           <button

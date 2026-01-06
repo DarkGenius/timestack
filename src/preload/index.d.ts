@@ -1,5 +1,11 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type { CreateTaskInput, UpdateTaskInput, TaskFilters, ApiResponse, Task } from '../shared/types'
+import type {
+  CreateTaskInput,
+  UpdateTaskInput,
+  TaskFilters,
+  ApiResponse,
+  Task
+} from '../shared/types'
 
 interface TasksAPI {
   create: (input: CreateTaskInput) => Promise<ApiResponse<Task>>

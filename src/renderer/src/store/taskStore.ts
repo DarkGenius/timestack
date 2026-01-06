@@ -17,7 +17,7 @@ interface TaskState {
   clearError: () => void
 }
 
-export const useTaskStore = create<TaskState>((set, get) => ({
+export const useTaskStore = create<TaskState>((set) => ({
   tasks: [],
   isLoading: false,
   error: null,
@@ -31,7 +31,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       } else {
         set({ error: response.error || 'Failed to load tasks', isLoading: false })
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to load tasks', isLoading: false })
     }
   },
@@ -45,7 +45,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       } else {
         set({ error: response.error || 'Failed to load tasks', isLoading: false })
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to load tasks', isLoading: false })
     }
   },
@@ -59,7 +59,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       } else {
         set({ error: response.error || 'Failed to load tasks', isLoading: false })
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to load tasks', isLoading: false })
     }
   },
@@ -75,7 +75,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         set({ error: response.error || 'Failed to create task' })
         return null
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to create task' })
       return null
     }
@@ -94,7 +94,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         set({ error: response.error || 'Failed to update task' })
         return null
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to update task' })
       return null
     }
@@ -113,7 +113,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         set({ error: response.error || 'Failed to delete task' })
         return false
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to delete task' })
       return false
     }
@@ -132,7 +132,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         set({ error: response.error || 'Failed to toggle task' })
         return null
       }
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to toggle task' })
       return null
     }

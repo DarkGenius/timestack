@@ -9,15 +9,14 @@ A modern task planner desktop application built with Electron, React, and TypeSc
 
 ## Features
 
-- **Calendar View** - Month, week, day, and agenda views
-- **List View** - Task list with filters by status and priority
-- **Task Management** - Create, edit, delete tasks with:
-  - Title and description
-  - Date assignment
-  - Priority levels (Low, Normal, High, Critical)
-  - Color coding (8 predefined colors)
-  - Time estimates
-- **Localization** - Russian and English languages
+- **Unified Layout** - Persistent sidebar with a calendar for quick date switching and navigation
+- **Task Management** - Clear task list with quick actions:
+  - One-click completion via checkboxes
+  - Priority-based sorting and color coding
+  - Keyboard-friendly task creation and editing
+  - Details: Description, Date, Priority (Low to Critical), Color, Time estimates
+- **Filters** - Filter tasks by status and priority directly from the sidebar
+- **Localization** - Automatic Russian and English language support
 - **Local Storage** - SQLite database, works offline
 - **Cross-platform** - Windows and macOS support
 
@@ -86,7 +85,7 @@ src/
 - **Zustand** - State management
 - **better-sqlite3** - SQLite database
 - **Tailwind CSS** - Styling
-- **react-big-calendar** - Calendar component
+- **Gravity UI** - Modern UI components and date utilities
 - **react-i18next** - Internationalization
 - **date-fns** - Date utilities
 
@@ -120,7 +119,7 @@ The SQLite database is stored in the user data directory:
 
 ### Language
 
-The app detects system language automatically. You can switch between Russian and English using the language toggle in the header.
+The app detects system language automatically and supports Russian and English.
 
 ## Roadmap
 
@@ -148,5 +147,5 @@ MIT
 ## Acknowledgments
 
 - [electron-vite](https://electron-vite.org/) - Build tooling
-- [react-big-calendar](https://jquense.github.io/react-big-calendar/) - Calendar component
+- [Gravity UI](https://gravity-ui.com/) - Design system and components
 - [Tailwind CSS](https://tailwindcss.com/) - Styling framework

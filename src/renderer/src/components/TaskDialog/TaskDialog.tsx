@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/Dialog'
 import { Button } from '../ui/Button'
@@ -10,7 +10,7 @@ import { useTaskStore } from '../../store/taskStore'
 import { useUIStore } from '../../store/uiStore'
 import type { TaskPriority, CreateTaskInput, UpdateTaskInput } from '../../../../shared/types'
 
-function TaskDialog() {
+function TaskDialog(): React.JSX.Element {
   const { t } = useTranslation()
   const { isTaskDialogOpen, editingTask, selectedDate, closeTaskDialog } = useUIStore()
   const { createTask, updateTask, deleteTask } = useTaskStore()
@@ -44,7 +44,7 @@ function TaskDialog() {
     }
   }, [isTaskDialogOpen, editingTask, selectedDate])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     if (!title.trim()) return
 
@@ -78,7 +78,7 @@ function TaskDialog() {
     }
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (): Promise<void> => {
     if (!editingTask) return
 
     if (window.confirm(t('confirm.deleteTask'))) {
@@ -150,7 +150,12 @@ function TaskDialog() {
                 {t('actions.delete')}
               </Button>
             )}
-            <Button type="button" variant="outline" onClick={closeTaskDialog} disabled={isSubmitting}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={closeTaskDialog}
+              disabled={isSubmitting}
+            >
               {t('actions.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting || !title.trim()}>

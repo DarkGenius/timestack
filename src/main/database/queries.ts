@@ -38,7 +38,9 @@ export function updateTask(id: string, updates: UpdateTaskInput): Task | null {
   const now = new Date().toISOString()
 
   // Get current task
-  const current = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as Task | undefined
+  const current = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as
+    | Task
+    | undefined
   if (!current) return null
 
   const updated: Task = {
@@ -80,36 +82,50 @@ export function deleteTask(id: string): boolean {
   const now = new Date().toISOString()
 
   // Soft delete
-  const result = db.prepare(`
+  const result = db
+    .prepare(
+      `
     UPDATE tasks SET deleted_at = ?, updated_at = ?, sync_status = 'pending'
     WHERE id = ? AND deleted_at IS NULL
-  `).run(now, now, id)
+  `
+    )
+    .run(now, now, id)
 
   return result.changes > 0
 }
 
 export function getTaskById(id: string): Task | null {
   const db = getDatabase()
-  const task = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as Task | undefined
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as
+    | Task
+    | undefined
   return task || null
 }
 
 export function getTasksByDate(date: string): Task[] {
   const db = getDatabase()
-  return db.prepare(`
+  return db
+    .prepare(
+      `
     SELECT * FROM tasks
     WHERE date = ? AND deleted_at IS NULL
     ORDER BY priority DESC, created_at ASC
-  `).all(date) as Task[]
+  `
+    )
+    .all(date) as Task[]
 }
 
 export function getTasksByDateRange(startDate: string, endDate: string): Task[] {
   const db = getDatabase()
-  return db.prepare(`
+  return db
+    .prepare(
+      `
     SELECT * FROM tasks
     WHERE date >= ? AND date <= ? AND deleted_at IS NULL
     ORDER BY date ASC, priority DESC, created_at ASC
-  `).all(startDate, endDate) as Task[]
+  `
+    )
+    .all(startDate, endDate) as Task[]
 }
 
 export function getTasksWithFilters(filters: TaskFilters): Task[] {
@@ -146,7 +162,9 @@ export function getTasksWithFilters(filters: TaskFilters): Task[] {
 
 export function toggleTaskStatus(id: string): Task | null {
   const db = getDatabase()
-  const task = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as Task | undefined
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as
+    | Task
+    | undefined
 
   if (!task) return null
 
@@ -156,9 +174,13 @@ export function toggleTaskStatus(id: string): Task | null {
 
 export function getAllTasks(): Task[] {
   const db = getDatabase()
-  return db.prepare(`
+  return db
+    .prepare(
+      `
     SELECT * FROM tasks
     WHERE deleted_at IS NULL
     ORDER BY date ASC, priority DESC, created_at ASC
-  `).all() as Task[]
+  `
+    )
+    .all() as Task[]
 }

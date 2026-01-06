@@ -1,14 +1,13 @@
-import { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { format } from 'date-fns'
 import { ru, enUS } from 'date-fns/locale'
 import { TaskCard } from './TaskCard'
-import { FilterPanel } from './FilterPanel'
 import { Button } from '../ui/Button'
 import { useTaskStore } from '../../store/taskStore'
 import { useUIStore } from '../../store/uiStore'
 
-function TaskListView() {
+function TaskListView(): React.JSX.Element {
   const { t, i18n } = useTranslation()
   const { tasks, isLoading, loadTasksByDate } = useTaskStore()
   const { selectedDate, statusFilter, priorityFilter, openNewTaskDialog, goToToday } = useUIStore()
@@ -42,9 +41,11 @@ function TaskListView() {
     })
   }, [filteredTasks])
 
-  const formattedDate = format(new Date(selectedDate), 'EEEE, d MMMM yyyy', {
-    locale: dateLocale
-  })
+  const dateObj = new Date(selectedDate)
+  const isValidDate = !isNaN(dateObj.getTime())
+  const formattedDate = isValidDate
+    ? format(dateObj, 'EEEE, d MMMM yyyy', { locale: dateLocale })
+    : selectedDate
 
   const isToday = selectedDate === format(new Date(), 'yyyy-MM-dd')
 
@@ -75,9 +76,6 @@ function TaskListView() {
         </div>
       </div>
 
-      {/* Filters */}
-      <FilterPanel />
-
       {/* Task list */}
       <div className="flex-1 overflow-auto mt-4 space-y-3">
         {isLoading ? (
@@ -86,7 +84,12 @@ function TaskListView() {
           </div>
         ) : sortedTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-gray-500">
-            <svg className="w-12 h-12 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-12 h-12 mb-2 text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -95,7 +98,11 @@ function TaskListView() {
               />
             </svg>
             <p>{t('task.empty')}</p>
-            <Button variant="ghost" className="mt-2" onClick={() => openNewTaskDialog(selectedDate)}>
+            <Button
+              variant="ghost"
+              className="mt-2"
+              onClick={() => openNewTaskDialog(selectedDate)}
+            >
               {t('task.addFirst')}
             </Button>
           </div>

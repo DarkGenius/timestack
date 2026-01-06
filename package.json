@@ -8,6 +8,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
+    "lint:fix": "eslint --cache --fix . && prettier --write .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
@@ -23,6 +24,10 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
+    "@gravity-ui/date-components": "^3.4.1",
+    "@gravity-ui/date-utils": "^2.6.0",
+    "@gravity-ui/icons": "^2.16.0",
+    "@gravity-ui/uikit": "^7.29.0",
     "better-sqlite3": "^12.5.0",
     "date-fns": "^4.1.0",
     "electron-updater": "^6.3.9",

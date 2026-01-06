@@ -1,4 +1,4 @@
-import { TextareaHTMLAttributes, forwardRef } from 'react'
+import React, { TextareaHTMLAttributes, forwardRef } from 'react'
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
@@ -6,7 +6,7 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className = '', label, error, id, ...props }, ref) => {
+  ({ className = '', label, error, id, ...props }, ref): React.JSX.Element => {
     const textareaId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
     return (

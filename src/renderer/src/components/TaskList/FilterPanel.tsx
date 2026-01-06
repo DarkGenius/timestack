@@ -1,3 +1,4 @@
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../ui/Button'
 import { useUIStore } from '../../store/uiStore'
@@ -9,7 +10,7 @@ type PriorityFilter = TaskPriority | 'all'
 const statusOptions: StatusFilter[] = ['all', 'open', 'completed']
 const priorityOptions: PriorityFilter[] = ['all', 'low', 'normal', 'high', 'critical']
 
-function FilterPanel() {
+function FilterPanel(): React.JSX.Element {
   const { t } = useTranslation()
   const { statusFilter, priorityFilter, setStatusFilter, setPriorityFilter, resetFilters } =
     useUIStore()
@@ -17,12 +18,10 @@ function FilterPanel() {
   const hasFilters = statusFilter !== 'all' || priorityFilter !== 'all'
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm space-y-4">
+    <div className="space-y-6">
       {/* Status filter */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          {t('filter.status')}
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t('filter.status')}</label>
         <div className="flex flex-wrap gap-2">
           {statusOptions.map((status) => (
             <Button

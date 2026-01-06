@@ -1,4 +1,4 @@
-import { SelectHTMLAttributes, forwardRef } from 'react'
+import React, { SelectHTMLAttributes, forwardRef } from 'react'
 
 interface SelectOption {
   value: string
@@ -12,7 +12,7 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'chi
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className = '', label, options, error, id, ...props }, ref) => {
+  ({ className = '', label, options, error, id, ...props }, ref): React.JSX.Element => {
     const selectId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
     return (

@@ -1,3 +1,4 @@
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '../ui/Badge'
 import { useTaskStore } from '../../store/taskStore'
@@ -16,17 +17,17 @@ function formatMinutes(minutes: number): string {
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
 }
 
-function TaskCard({ task }: TaskCardProps) {
+function TaskCard({ task }: TaskCardProps): React.JSX.Element {
   const { t } = useTranslation()
   const { toggleTask } = useTaskStore()
   const { openEditTaskDialog } = useUIStore()
 
-  const handleToggle = async (e: React.MouseEvent) => {
+  const handleToggle = async (e: React.MouseEvent): Promise<void> => {
     e.stopPropagation()
     await toggleTask(task.id)
   }
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     openEditTaskDialog(task)
   }
 

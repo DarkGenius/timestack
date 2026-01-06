@@ -7,13 +7,14 @@ TimeStack is an Electron-based task planner application with calendar and list v
 ## Architecture
 
 ### Technology Stack
+
 - **Runtime**: Electron 39+
 - **Frontend**: React 19 + TypeScript
 - **Build Tool**: electron-vite
 - **Database**: SQLite (better-sqlite3)
 - **State Management**: Zustand
 - **Styling**: Tailwind CSS v3
-- **Calendar**: react-big-calendar
+- **Calendar**: Gravity UI (@gravity-ui/date-components)
 - **i18n**: react-i18next (RU/EN)
 
 ### Project Structure
@@ -36,11 +37,10 @@ timestack/
 │   │   ├── App.tsx              # Root component
 │   │   ├── main.tsx             # React entry point
 │   │   ├── components/
-│   │   │   ├── Calendar/        # Calendar view components
+│   │   │   ├── Sidebar.tsx      # Persistent sidebar with calendar
 │   │   │   ├── TaskList/        # List view components
 │   │   │   ├── TaskDialog/      # Task create/edit dialog
-│   │   │   ├── ui/              # Reusable UI components
-│   │   │   └── Header.tsx       # App header with navigation
+│   │   │   └── ui/              # Reusable UI components
 │   │   ├── store/
 │   │   │   ├── taskStore.ts     # Task state & actions
 │   │   │   └── uiStore.ts       # UI state (view, filters, dialogs)
@@ -75,6 +75,7 @@ User Action → React Component → Zustand Store → IPC (preload) → Main Pro
 ## Database Schema
 
 ### Tasks Table
+
 - `id` (TEXT PRIMARY KEY) - UUID
 - `title` (TEXT NOT NULL)
 - `description` (TEXT)
@@ -91,6 +92,7 @@ User Action → React Component → Zustand Store → IPC (preload) → Main Pro
 ## Common Tasks
 
 ### Adding a new IPC handler
+
 1. Add query function in `src/main/database/queries.ts`
 2. Register handler in `src/main/ipc/handlers.ts`
 3. Expose in `src/preload/index.ts`
@@ -98,18 +100,22 @@ User Action → React Component → Zustand Store → IPC (preload) → Main Pro
 5. Use via `window.api.tasks.newMethod()`
 
 ### Adding a new UI component
+
 1. Create in `src/renderer/src/components/`
 2. Use Tailwind classes for styling
 3. Import translations with `useTranslation()`
 4. Access state via Zustand hooks
 
 ### Adding translations
+
 1. Add keys to `src/renderer/src/i18n/locales/ru.json`
 2. Add keys to `src/renderer/src/i18n/locales/en.json`
 3. Use with `t('key.path')`
 
 ### Rebuilding native modules
+
 After updating Electron version:
+
 ```bash
 npx electron-rebuild -f -w better-sqlite3
 ```
@@ -131,7 +137,7 @@ npm run typecheck    # TypeScript check
 - Always use `format(date, 'yyyy-MM-dd')` for date strings
 - Task colors are predefined in `TASK_COLORS` constant
 - Priority colors defined in `PRIORITY_COLORS` constant
-- Calendar uses date-fns for localization (ru/enUS locales)
+- Calendar uses `@gravity-ui/date-utils` for date handling
 
 ## Future Enhancements (Not Implemented)
 

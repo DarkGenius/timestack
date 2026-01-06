@@ -1,3 +1,4 @@
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TaskPriority } from '../../../../shared/types'
 import { PRIORITY_COLORS } from '../../../../shared/types'
@@ -9,14 +10,12 @@ interface PrioritySelectProps {
 
 const priorities: TaskPriority[] = ['low', 'normal', 'high', 'critical']
 
-function PrioritySelect({ value, onChange }: PrioritySelectProps) {
+function PrioritySelect({ value, onChange }: PrioritySelectProps): React.JSX.Element {
   const { t } = useTranslation()
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {t('task.priority')}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{t('task.priority')}</label>
       <div className="flex gap-2">
         {priorities.map((priority) => (
           <button
@@ -26,11 +25,7 @@ function PrioritySelect({ value, onChange }: PrioritySelectProps) {
             className={`
               flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all
               border-2
-              ${
-                value === priority
-                  ? 'border-current'
-                  : 'border-transparent hover:border-gray-200'
-              }
+              ${value === priority ? 'border-current' : 'border-transparent hover:border-gray-200'}
             `}
             style={{
               backgroundColor:
