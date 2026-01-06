@@ -23,11 +23,12 @@ function TaskListView(): React.JSX.Element {
   // Filter tasks based on current filters
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
+      if (task.date !== selectedDate) return false
       if (statusFilter !== 'all' && task.status !== statusFilter) return false
       if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false
       return true
     })
-  }, [tasks, statusFilter, priorityFilter])
+  }, [tasks, selectedDate, statusFilter, priorityFilter])
 
   // Sort tasks: open first (by priority), then completed
   const sortedTasks = useMemo(() => {
