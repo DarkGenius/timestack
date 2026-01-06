@@ -43,7 +43,11 @@
       "pink": "Pink"
     },
     "empty": "No tasks for this day",
-    "addFirst": "Add your first task"
+    "addFirst": "Add your first task",
+    "tasksCount_one": "{{count}} task",
+    "tasksCount_other": "{{count}} tasks",
+    "completedCount_one": "{{count}} completed",
+    "completedCount_other": "{{count}} completed"
   },
   "filter": {
     "all": "All",
@@ -60,7 +64,10 @@
   },
   "confirm": {
     "deleteTask": "Are you sure you want to delete this task?",
-    "deleteTitle": "Delete Task"
+    "deleteTitle": "Delete Task",
+    "actualTimeTitle": "Actual Time",
+    "actualTimeMessage": "How much time (in minutes) did you spend on this task?",
+    "skip": "Skip"
   },
   "calendar": {
     "month": "Month",

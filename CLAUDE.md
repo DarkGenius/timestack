@@ -139,6 +139,13 @@ npm run typecheck    # TypeScript check
 - Priority colors defined in `PRIORITY_COLORS` constant
 - Calendar uses `@gravity-ui/date-utils` for date handling
 
+## Development rules
+
+- After making changes, always check for lint errors and fix them.
+- After making changes, always check for prettier errors and fix them.
+- After making changes, always check for type errors and fix them.
+- After making changes, always check for formatting errors and fix them.
+
 ## Future Enhancements (Not Implemented)
 
 - S3 synchronization (tables ready: `sync_log`, `settings`)

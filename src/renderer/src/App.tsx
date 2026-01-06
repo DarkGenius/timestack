@@ -3,7 +3,7 @@ import { ThemeProvider } from '@gravity-ui/uikit'
 import '@gravity-ui/uikit/styles/styles.css'
 import { Sidebar } from './components/Sidebar'
 import { TaskListView } from './components/TaskList'
-import { TaskDialog } from './components/TaskDialog'
+import { TaskDialog, ActualTimeDialog } from './components/TaskDialog'
 
 function App(): React.JSX.Element {
   return (
@@ -19,6 +19,7 @@ function App(): React.JSX.Element {
         </main>
 
         <TaskDialog />
+        <ActualTimeDialog />
       </div>
     </ThemeProvider>
   )

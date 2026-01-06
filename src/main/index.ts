@@ -4,12 +4,22 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { getDatabase, closeDatabase } from './database/db'
 import { registerIpcHandlers } from './ipc/handlers'
+import { WindowStateManager } from './window-state'
+
+const windowManager = new WindowStateManager('main', {
+  width: 1200,
+  height: 800
+})
 
 function createWindow(): void {
+  const windowState = windowManager.getWindowState()
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: windowState.width,
+    height: windowState.height,
+    x: windowState.x,
+    y: windowState.y,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -17,6 +27,15 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
+  })
+
+  if (windowState.isMaximized) {
+    mainWindow.maximize()
+  }
+
+  // Save window state on close
+  mainWindow.on('close', () => {
+    windowManager.saveState(mainWindow)
   })
 
   mainWindow.on('ready-to-show', () => {

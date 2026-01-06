@@ -24,7 +24,12 @@ function TaskCard({ task }: TaskCardProps): React.JSX.Element {
 
   const handleToggle = async (e: React.MouseEvent): Promise<void> => {
     e.stopPropagation()
-    await toggleTask(task.id)
+    const isCompleting = task.status !== 'completed'
+    const updatedTask = await toggleTask(task.id)
+
+    if (isCompleting && updatedTask && updatedTask.status === 'completed') {
+      useUIStore.getState().openActualTimeDialog(updatedTask)
+    }
   }
 
   const handleClick = (): void => {

@@ -43,7 +43,13 @@
       "pink": "Розовый"
     },
     "empty": "Нет задач на этот день",
-    "addFirst": "Добавьте первую задачу"
+    "addFirst": "Добавьте первую задачу",
+    "tasksCount_one": "{{count}} задача",
+    "tasksCount_few": "{{count}} задачи",
+    "tasksCount_many": "{{count}} задач",
+    "completedCount_one": "{{count}} выполнена",
+    "completedCount_few": "{{count}} выполнены",
+    "completedCount_many": "{{count}} выполнено"
   },
   "filter": {
     "all": "Все",
@@ -60,7 +66,10 @@
   },
   "confirm": {
     "deleteTask": "Вы уверены, что хотите удалить эту задачу?",
-    "deleteTitle": "Удаление задачи"
+    "deleteTitle": "Удаление задачи",
+    "actualTimeTitle": "Время выполнения",
+    "actualTimeMessage": "Сколько времени (в минутах) вы потратили на эту задачу?",
+    "skip": "Пропустить"
   },
   "calendar": {
     "month": "Месяц",

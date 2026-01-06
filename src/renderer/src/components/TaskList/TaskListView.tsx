@@ -49,6 +49,8 @@ function TaskListView(): React.JSX.Element {
 
   const isToday = selectedDate === format(new Date(), 'yyyy-MM-dd')
 
+  const completedCount = filteredTasks.filter((t) => t.status === 'completed').length
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -56,13 +58,9 @@ function TaskListView(): React.JSX.Element {
         <div>
           <h2 className="text-2xl font-bold text-gray-900 capitalize">{formattedDate}</h2>
           <p className="text-sm text-gray-500">
-            {filteredTasks.length} {t('task.title').toLowerCase()}
-            {filteredTasks.filter((t) => t.status === 'completed').length > 0 && (
-              <span>
-                {' '}
-                ({filteredTasks.filter((t) => t.status === 'completed').length}{' '}
-                {t('task.status.completed').toLowerCase()})
-              </span>
+            {t('task.tasksCount', { count: filteredTasks.length })}
+            {completedCount > 0 && (
+              <span> ({t('task.completedCount', { count: completedCount })})</span>
             )}
           </p>
         </div>

@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 /* Base styles */
+html,
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-gray-50 text-gray-900 antialiased h-full w-full;
   font-family:
     'Inter',
     system-ui,
@@ -14,7 +15,7 @@ body {
 }
 
 #root {
-  @apply h-screen w-screen flex flex-col;
+  @apply h-full w-full flex flex-col;
 }
 
 /* Custom scrollbar */

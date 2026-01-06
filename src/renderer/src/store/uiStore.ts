@@ -8,7 +8,9 @@ interface UIState {
 
   // Dialog states
   isTaskDialogOpen: boolean
+  isActualTimeDialogOpen: boolean
   editingTask: Task | null
+  completingTask: Task | null
 
   // Filters
   statusFilter: TaskStatus | 'all'
@@ -22,6 +24,8 @@ interface UIState {
   openNewTaskDialog: (date?: string) => void
   openEditTaskDialog: (task: Task) => void
   closeTaskDialog: () => void
+  openActualTimeDialog: (task: Task) => void
+  closeActualTimeDialog: () => void
 
   // Filter actions
   setStatusFilter: (status: TaskStatus | 'all') => void
@@ -34,7 +38,9 @@ export const useUIStore = create<UIState>((set) => ({
   selectedDate: format(new Date(), 'yyyy-MM-dd'),
 
   isTaskDialogOpen: false,
+  isActualTimeDialogOpen: false,
   editingTask: null,
+  completingTask: null,
 
   statusFilter: 'all',
   priorityFilter: 'all',
@@ -69,6 +75,16 @@ export const useUIStore = create<UIState>((set) => ({
     set({
       isTaskDialogOpen: false,
       editingTask: null
+    }),
+  openActualTimeDialog: (task) =>
+    set({
+      isActualTimeDialogOpen: true,
+      completingTask: task
+    }),
+  closeActualTimeDialog: () =>
+    set({
+      isActualTimeDialogOpen: false,
+      completingTask: null
     }),
 
   // Filter actions
