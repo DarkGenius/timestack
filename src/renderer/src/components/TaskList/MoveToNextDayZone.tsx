@@ -1,42 +1,42 @@
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { addDays, format } from 'date-fns'
-import { useUIStore } from '../../store/uiStore'
-import { useTaskStore } from '../../store/taskStore'
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { addDays, format } from 'date-fns';
+import { useUIStore } from '../../store/uiStore';
+import { useTaskStore } from '../../store/taskStore';
 
 export const MoveToNextDayZone: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { isTaskDragging, draggedTaskId, selectedDate, setIsTaskDragging, setDraggedTaskId } =
-    useUIStore()
-  const { updateTask, loadTasksByDate } = useTaskStore()
-  const [isOver, setIsOver] = useState(false)
+    useUIStore();
+  const { updateTask, loadTasksByDate } = useTaskStore();
+  const [isOver, setIsOver] = useState(false);
 
-  if (!isTaskDragging) return null
+  if (!isTaskDragging) return null;
 
   const handleDragOver = (e: React.DragEvent): void => {
-    e.preventDefault()
-    setIsOver(true)
-  }
+    e.preventDefault();
+    setIsOver(true);
+  };
 
   const handleDragLeave = (): void => {
-    setIsOver(false)
-  }
+    setIsOver(false);
+  };
 
   const handleDrop = async (e: React.DragEvent): Promise<void> => {
-    e.preventDefault()
-    setIsOver(false)
+    e.preventDefault();
+    setIsOver(false);
 
-    const taskId = e.dataTransfer.getData('application/timestack-task-id') || draggedTaskId
+    const taskId = e.dataTransfer.getData('application/timestack-task-id') || draggedTaskId;
 
     if (taskId) {
-      const nextDate = format(addDays(new Date(selectedDate), 1), 'yyyy-MM-dd')
-      await updateTask(taskId, { date: nextDate })
-      await loadTasksByDate(selectedDate)
+      const nextDate = format(addDays(new Date(selectedDate), 1), 'yyyy-MM-dd');
+      await updateTask(taskId, { date: nextDate });
+      await loadTasksByDate(selectedDate);
     }
 
-    setIsTaskDragging(false)
-    setDraggedTaskId(null)
-  }
+    setIsTaskDragging(false);
+    setDraggedTaskId(null);
+  };
 
   return (
     <div
@@ -76,5 +76,5 @@ export const MoveToNextDayZone: React.FC = () => {
         {t('task.moveToNextDay')}
       </p>
     </div>
-  )
-}
+  );
+};

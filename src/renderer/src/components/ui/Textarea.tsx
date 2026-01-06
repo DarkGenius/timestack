@@ -1,13 +1,13 @@
-import React, { TextareaHTMLAttributes, forwardRef } from 'react'
+import React, { TextareaHTMLAttributes, forwardRef } from 'react';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label?: string
-  error?: string
+  label?: string;
+  error?: string;
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className = '', label, error, id, ...props }, ref): React.JSX.Element => {
-    const textareaId = id || label?.toLowerCase().replace(/\s+/g, '-')
+    const textareaId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
       <div className="w-full">
@@ -32,10 +32,10 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         />
         {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
-    )
+    );
   }
-)
+);
 
-Textarea.displayName = 'Textarea'
+Textarea.displayName = 'Textarea';
 
-export { Textarea }
+export { Textarea };

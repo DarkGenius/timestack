@@ -1,65 +1,67 @@
-import React, { useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { format } from 'date-fns'
-import { ru, enUS } from 'date-fns/locale'
-import { TaskCard } from './TaskCard'
-import { MoveToNextDayZone } from './MoveToNextDayZone'
-import { Button } from '../ui/Button'
-import { useTaskStore } from '../../store/taskStore'
-import { useUIStore } from '../../store/uiStore'
+import React, { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
+import { ru, enUS } from 'date-fns/locale';
+import { TaskCard } from './TaskCard';
+import { MoveToNextDayZone } from './MoveToNextDayZone';
+import { Button } from '../ui/Button';
+import { useTaskStore } from '../../store/taskStore';
+import { useUIStore } from '../../store/uiStore';
 
 function TaskListView(): React.JSX.Element {
-  const { t, i18n } = useTranslation()
-  const { tasks, isLoading, loadTasksByDate } = useTaskStore()
-  const { selectedDate, statusFilter, priorityFilter, openNewTaskDialog, goToToday } = useUIStore()
+  const { t, i18n } = useTranslation();
+  const { tasks, isLoading, loadTasksByDate } = useTaskStore();
+  const { selectedDate, statusFilter, priorityFilter, openNewTaskDialog, goToToday } = useUIStore();
 
-  const dateLocale = i18n.language === 'ru' ? ru : enUS
+  const dateLocale = i18n.language === 'ru' ? ru : enUS;
 
   // Load tasks when date changes
   useEffect(() => {
-    loadTasksByDate(selectedDate)
-  }, [selectedDate, loadTasksByDate])
+    loadTasksByDate(selectedDate);
+  }, [selectedDate, loadTasksByDate]);
 
   // Filter tasks based on current filters
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
-      if (task.date !== selectedDate) return false
-      if (statusFilter !== 'all' && task.status !== statusFilter) return false
-      if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false
-      return true
-    })
-  }, [tasks, selectedDate, statusFilter, priorityFilter])
+      if (task.date !== selectedDate) return false;
+      if (statusFilter !== 'all' && task.status !== statusFilter) return false;
+      if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false;
+      return true;
+    });
+  }, [tasks, selectedDate, statusFilter, priorityFilter]);
 
   // Sort tasks: open first (by priority), then completed
   const sortedTasks = useMemo(() => {
-    const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 }
+    const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 };
     return [...filteredTasks].sort((a, b) => {
       // Completed tasks go last
       if (a.status !== b.status) {
-        return a.status === 'completed' ? 1 : -1
+        return a.status === 'completed' ? 1 : -1;
       }
       // Sort by priority
-      return priorityOrder[a.priority] - priorityOrder[b.priority]
-    })
-  }, [filteredTasks])
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    });
+  }, [filteredTasks]);
 
-  const dateObj = new Date(selectedDate)
-  const isValidDate = !isNaN(dateObj.getTime())
+  const dateObj = new Date(selectedDate);
+  const isValidDate = !isNaN(dateObj.getTime());
   const formattedDate = isValidDate
     ? format(dateObj, 'EEEE, d MMMM yyyy', { locale: dateLocale })
-    : selectedDate
+    : selectedDate;
 
-  const isToday = selectedDate === format(new Date(), 'yyyy-MM-dd')
+  const isToday = selectedDate === format(new Date(), 'yyyy-MM-dd');
 
-  const completedCount = filteredTasks.filter((t) => t.status === 'completed').length
+  const completedCount = filteredTasks.filter((t) => t.status === 'completed').length;
 
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 capitalize">{formattedDate}</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 capitalize">
+            {formattedDate}
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {t('task.tasksCount', { count: filteredTasks.length })}
             {completedCount > 0 && (
               <span> ({t('task.completedCount', { count: completedCount })})</span>
@@ -83,9 +85,9 @@ function TaskListView(): React.JSX.Element {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
           </div>
         ) : sortedTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-32 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-32 text-gray-500 dark:text-gray-400">
             <svg
-              className="w-12 h-12 mb-2 text-gray-300"
+              className="w-12 h-12 mb-2 text-gray-300 dark:text-gray-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -113,7 +115,7 @@ function TaskListView(): React.JSX.Element {
         <MoveToNextDayZone />
       </div>
     </div>
-  )
+  );
 }
 
-export { TaskListView }
+export { TaskListView };

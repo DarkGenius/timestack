@@ -80,7 +80,17 @@
     "agenda": "Повестка"
   },
   "settings": {
+    "title": "Настройки",
     "language": "Язык",
-    "theme": "Тема"
+    "theme": "Тема",
+    "themes": {
+      "light": "Светлая",
+      "dark": "Тёмная",
+      "system": "Системная"
+    },
+    "languages": {
+      "en": "English",
+      "ru": "Русский"
+    }
   }
 }

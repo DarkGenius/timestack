@@ -1,44 +1,55 @@
-import { create } from 'zustand'
-import { format } from 'date-fns'
-import type { Task, TaskStatus, TaskPriority } from '../../../shared/types'
+import { create } from 'zustand';
+import { format } from 'date-fns';
+import type { Task, TaskStatus, TaskPriority } from '../../../shared/types';
 
 interface UIState {
   // Current view
-  selectedDate: string // ISO date string YYYY-MM-DD
+  selectedDate: string; // ISO date string YYYY-MM-DD
 
   // Dialog states
-  isTaskDialogOpen: boolean
-  isActualTimeDialogOpen: boolean
-  editingTask: Task | null
-  completingTask: Task | null
+  isTaskDialogOpen: boolean;
+  isActualTimeDialogOpen: boolean;
+  editingTask: Task | null;
+  completingTask: Task | null;
 
   // Filters
-  statusFilter: TaskStatus | 'all'
-  priorityFilter: TaskPriority | 'all'
+  statusFilter: TaskStatus | 'all';
+  priorityFilter: TaskPriority | 'all';
 
   // Dragging state
-  isTaskDragging: boolean
-  draggedTaskId: string | null
+  isTaskDragging: boolean;
+  draggedTaskId: string | null;
+
+  // Settings state
+  isSettingsDialogOpen: boolean;
+  language: string;
+  theme: 'light' | 'dark' | 'system';
 
   // Actions
-  setSelectedDate: (date: string | Date) => void
-  goToToday: () => void
+  setSelectedDate: (date: string | Date) => void;
+  goToToday: () => void;
 
   // Dialog actions
-  openNewTaskDialog: (date?: string) => void
-  openEditTaskDialog: (task: Task) => void
-  closeTaskDialog: () => void
-  openActualTimeDialog: (task: Task) => void
-  closeActualTimeDialog: () => void
+  openNewTaskDialog: (date?: string) => void;
+  openEditTaskDialog: (task: Task) => void;
+  closeTaskDialog: () => void;
+  openActualTimeDialog: (task: Task) => void;
+  closeActualTimeDialog: () => void;
 
   // Filter actions
-  setStatusFilter: (status: TaskStatus | 'all') => void
-  setPriorityFilter: (priority: TaskPriority | 'all') => void
-  resetFilters: () => void
+  setStatusFilter: (status: TaskStatus | 'all') => void;
+  setPriorityFilter: (priority: TaskPriority | 'all') => void;
+  resetFilters: () => void;
 
   // Dragging actions
-  setIsTaskDragging: (dragging: boolean) => void
-  setDraggedTaskId: (id: string | null) => void
+  setIsTaskDragging: (dragging: boolean) => void;
+  setDraggedTaskId: (id: string | null) => void;
+
+  // Settings actions
+  openSettingsDialog: () => void;
+  closeSettingsDialog: () => void;
+  setLanguage: (lang: string) => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -56,15 +67,19 @@ export const useUIStore = create<UIState>((set) => ({
   isTaskDragging: false,
   draggedTaskId: null,
 
+  isSettingsDialogOpen: false,
+  language: localStorage.getItem('language') || 'en',
+  theme: (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system',
+
   // View actions
   setSelectedDate: (date) => {
     if (typeof date === 'string') {
-      set({ selectedDate: date })
+      set({ selectedDate: date });
     } else {
       try {
-        set({ selectedDate: format(date, 'yyyy-MM-dd') })
+        set({ selectedDate: format(date, 'yyyy-MM-dd') });
       } catch (e) {
-        console.error('Invalid date passed to setSelectedDate:', date, e)
+        console.error('Invalid date passed to setSelectedDate:', date, e);
       }
     }
   },
@@ -105,5 +120,17 @@ export const useUIStore = create<UIState>((set) => ({
 
   // Dragging actions
   setIsTaskDragging: (dragging) => set({ isTaskDragging: dragging }),
-  setDraggedTaskId: (id) => set({ draggedTaskId: id })
-}))
+  setDraggedTaskId: (id) => set({ draggedTaskId: id }),
+
+  // Settings actions
+  openSettingsDialog: () => set({ isSettingsDialogOpen: true }),
+  closeSettingsDialog: () => set({ isSettingsDialogOpen: false }),
+  setLanguage: (language) => {
+    localStorage.setItem('language', language);
+    set({ language });
+  },
+  setTheme: (theme) => {
+    localStorage.setItem('theme', theme);
+    set({ theme });
+  }
+}));

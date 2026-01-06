@@ -78,7 +78,17 @@
     "agenda": "Agenda"
   },
   "settings": {
+    "title": "Settings",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "languages": {
+      "en": "English",
+      "ru": "Russian"
+    }
   }
 }

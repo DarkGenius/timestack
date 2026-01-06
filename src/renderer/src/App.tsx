@@ -1,14 +1,50 @@
-import React from 'react'
-import { ThemeProvider } from '@gravity-ui/uikit'
-import '@gravity-ui/uikit/styles/styles.css'
-import { Sidebar } from './components/Sidebar'
-import { TaskListView } from './components/TaskList'
-import { TaskDialog, ActualTimeDialog } from './components/TaskDialog'
+import React from 'react';
+import { ThemeProvider } from '@gravity-ui/uikit';
+import '@gravity-ui/uikit/styles/styles.css';
+import { useTranslation } from 'react-i18next';
+import { Sidebar } from './components/Sidebar';
+import { TaskListView } from './components/TaskList';
+import { TaskDialog, ActualTimeDialog } from './components/TaskDialog';
+import { SettingsDialog } from './components/SettingsDialog';
+import { useUIStore } from './store/uiStore';
 
 function App(): React.JSX.Element {
+  const { theme, language } = useUIStore();
+  const { i18n } = useTranslation();
+
+  // Sync language on mount
+  React.useEffect(() => {
+    if (i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
+
+  const [systemTheme, setSystemTheme] = React.useState<'light' | 'dark'>(
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent): void => {
+      setSystemTheme(e.matches ? 'dark' : 'light');
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  const activeTheme = theme === 'system' ? systemTheme : theme;
+
+  React.useEffect(() => {
+    if (activeTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [activeTheme]);
+
   return (
-    <ThemeProvider theme="light">
-      <div className="h-screen flex bg-gray-50 text-gray-900 font-sans">
+    <ThemeProvider theme={activeTheme}>
+      <div className="h-screen flex bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-200">
         <Sidebar />
 
         <main className="flex-1 overflow-hidden flex flex-col">
@@ -20,9 +56,10 @@ function App(): React.JSX.Element {
 
         <TaskDialog />
         <ActualTimeDialog />
+        <SettingsDialog />
       </div>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

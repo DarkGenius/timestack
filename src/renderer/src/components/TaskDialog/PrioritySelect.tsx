@@ -1,17 +1,17 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import type { TaskPriority } from '../../../../shared/types'
-import { PRIORITY_COLORS } from '../../../../shared/types'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TaskPriority } from '../../../../shared/types';
+import { PRIORITY_COLORS } from '../../../../shared/types';
 
 interface PrioritySelectProps {
-  value: TaskPriority
-  onChange: (priority: TaskPriority) => void
+  value: TaskPriority;
+  onChange: (priority: TaskPriority) => void;
 }
 
-const priorities: TaskPriority[] = ['low', 'normal', 'high', 'critical']
+const priorities: TaskPriority[] = ['low', 'normal', 'high', 'critical'];
 
 function PrioritySelect({ value, onChange }: PrioritySelectProps): React.JSX.Element {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div>
@@ -38,7 +38,7 @@ function PrioritySelect({ value, onChange }: PrioritySelectProps): React.JSX.Ele
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export { PrioritySelect }
+export { PrioritySelect };

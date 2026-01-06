@@ -1,27 +1,29 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Button } from '../ui/Button'
-import { useUIStore } from '../../store/uiStore'
-import type { TaskStatus, TaskPriority } from '../../../../shared/types'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '../ui/Button';
+import { useUIStore } from '../../store/uiStore';
+import type { TaskStatus, TaskPriority } from '../../../../shared/types';
 
-type StatusFilter = TaskStatus | 'all'
-type PriorityFilter = TaskPriority | 'all'
+type StatusFilter = TaskStatus | 'all';
+type PriorityFilter = TaskPriority | 'all';
 
-const statusOptions: StatusFilter[] = ['all', 'open', 'completed']
-const priorityOptions: PriorityFilter[] = ['all', 'low', 'normal', 'high', 'critical']
+const statusOptions: StatusFilter[] = ['all', 'open', 'completed'];
+const priorityOptions: PriorityFilter[] = ['all', 'low', 'normal', 'high', 'critical'];
 
 function FilterPanel(): React.JSX.Element {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { statusFilter, priorityFilter, setStatusFilter, setPriorityFilter, resetFilters } =
-    useUIStore()
+    useUIStore();
 
-  const hasFilters = statusFilter !== 'all' || priorityFilter !== 'all'
+  const hasFilters = statusFilter !== 'all' || priorityFilter !== 'all';
 
   return (
     <div className="space-y-6">
       {/* Status filter */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">{t('filter.status')}</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          {t('filter.status')}
+        </label>
         <div className="flex flex-wrap gap-2">
           {statusOptions.map((status) => (
             <Button
@@ -38,7 +40,7 @@ function FilterPanel(): React.JSX.Element {
 
       {/* Priority filter */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {t('filter.priority')}
         </label>
         <div className="flex flex-wrap gap-2">
@@ -62,7 +64,7 @@ function FilterPanel(): React.JSX.Element {
         </Button>
       )}
     </div>
-  )
+  );
 }
 
-export { FilterPanel }
+export { FilterPanel };

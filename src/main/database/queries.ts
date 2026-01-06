@@ -1,11 +1,11 @@
-import { v4 as uuidv4 } from 'uuid'
-import { getDatabase } from './db'
-import type { Task, CreateTaskInput, UpdateTaskInput, TaskFilters } from '../../shared/types'
+import { v4 as uuidv4 } from 'uuid';
+import { getDatabase } from './db';
+import type { Task, CreateTaskInput, UpdateTaskInput, TaskFilters } from '../../shared/types';
 
 export function createTask(input: CreateTaskInput): Task {
-  const db = getDatabase()
-  const now = new Date().toISOString()
-  const id = uuidv4()
+  const db = getDatabase();
+  const now = new Date().toISOString();
+  const id = uuidv4();
 
   const task: Task = {
     id,
@@ -23,44 +23,44 @@ export function createTask(input: CreateTaskInput): Task {
     deleted_at: null,
     sync_status: 'pending',
     moved_from_date: null
-  }
+  };
 
   const stmt = db.prepare(`
     INSERT INTO tasks (id, title, description, date, priority, color, estimated_time, actual_time, status, completed_at, created_at, updated_at, deleted_at, sync_status, moved_from_date)
     VALUES (@id, @title, @description, @date, @priority, @color, @estimated_time, @actual_time, @status, @completed_at, @created_at, @updated_at, @deleted_at, @sync_status, @moved_from_date)
-  `)
+  `);
 
-  stmt.run(task)
-  return task
+  stmt.run(task);
+  return task;
 }
 
 export function updateTask(id: string, updates: UpdateTaskInput): Task | null {
-  const db = getDatabase()
-  const now = new Date().toISOString()
+  const db = getDatabase();
+  const now = new Date().toISOString();
 
   // Get current task
   const current = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as
     | Task
-    | undefined
-  if (!current) return null
+    | undefined;
+  if (!current) return null;
 
   const updated: Task = {
     ...current,
     ...updates,
     updated_at: now,
     sync_status: 'pending'
-  }
+  };
 
   // If completing task, set completed_at
   if (updates.status === 'completed' && current.status !== 'completed') {
-    updated.completed_at = now
+    updated.completed_at = now;
   } else if (updates.status === 'open' && current.status === 'completed') {
-    updated.completed_at = null
+    updated.completed_at = null;
   }
 
   // If date is changed, update moved_from_date
   if (updates.date && updates.date !== current.date) {
-    updated.moved_from_date = current.date
+    updated.moved_from_date = current.date;
   }
 
   const stmt = db.prepare(`
@@ -78,15 +78,15 @@ export function updateTask(id: string, updates: UpdateTaskInput): Task | null {
       sync_status = @sync_status,
       moved_from_date = @moved_from_date
     WHERE id = @id
-  `)
+  `);
 
-  stmt.run(updated)
-  return updated
+  stmt.run(updated);
+  return updated;
 }
 
 export function deleteTask(id: string): boolean {
-  const db = getDatabase()
-  const now = new Date().toISOString()
+  const db = getDatabase();
+  const now = new Date().toISOString();
 
   // Soft delete
   const result = db
@@ -96,21 +96,21 @@ export function deleteTask(id: string): boolean {
     WHERE id = ? AND deleted_at IS NULL
   `
     )
-    .run(now, now, id)
+    .run(now, now, id);
 
-  return result.changes > 0
+  return result.changes > 0;
 }
 
 export function getTaskById(id: string): Task | null {
-  const db = getDatabase()
+  const db = getDatabase();
   const task = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as
     | Task
-    | undefined
-  return task || null
+    | undefined;
+  return task || null;
 }
 
 export function getTasksByDate(date: string): Task[] {
-  const db = getDatabase()
+  const db = getDatabase();
   return db
     .prepare(
       `
@@ -119,11 +119,11 @@ export function getTasksByDate(date: string): Task[] {
     ORDER BY priority DESC, created_at ASC
   `
     )
-    .all(date) as Task[]
+    .all(date) as Task[];
 }
 
 export function getTasksByDateRange(startDate: string, endDate: string): Task[] {
-  const db = getDatabase()
+  const db = getDatabase();
   return db
     .prepare(
       `
@@ -132,55 +132,55 @@ export function getTasksByDateRange(startDate: string, endDate: string): Task[] 
     ORDER BY date ASC, priority DESC, created_at ASC
   `
     )
-    .all(startDate, endDate) as Task[]
+    .all(startDate, endDate) as Task[];
 }
 
 export function getTasksWithFilters(filters: TaskFilters): Task[] {
-  const db = getDatabase()
+  const db = getDatabase();
 
-  let query = 'SELECT * FROM tasks WHERE deleted_at IS NULL'
-  const params: Record<string, string> = {}
+  let query = 'SELECT * FROM tasks WHERE deleted_at IS NULL';
+  const params: Record<string, string> = {};
 
   if (filters.date) {
-    query += ' AND date = @date'
-    params.date = filters.date
+    query += ' AND date = @date';
+    params.date = filters.date;
   }
 
   if (filters.startDate && filters.endDate) {
-    query += ' AND date >= @startDate AND date <= @endDate'
-    params.startDate = filters.startDate
-    params.endDate = filters.endDate
+    query += ' AND date >= @startDate AND date <= @endDate';
+    params.startDate = filters.startDate;
+    params.endDate = filters.endDate;
   }
 
   if (filters.status && filters.status !== 'all') {
-    query += ' AND status = @status'
-    params.status = filters.status
+    query += ' AND status = @status';
+    params.status = filters.status;
   }
 
   if (filters.priority && filters.priority !== 'all') {
-    query += ' AND priority = @priority'
-    params.priority = filters.priority
+    query += ' AND priority = @priority';
+    params.priority = filters.priority;
   }
 
-  query += ' ORDER BY date ASC, priority DESC, created_at ASC'
+  query += ' ORDER BY date ASC, priority DESC, created_at ASC';
 
-  return db.prepare(query).all(params) as Task[]
+  return db.prepare(query).all(params) as Task[];
 }
 
 export function toggleTaskStatus(id: string): Task | null {
-  const db = getDatabase()
+  const db = getDatabase();
   const task = db.prepare('SELECT * FROM tasks WHERE id = ? AND deleted_at IS NULL').get(id) as
     | Task
-    | undefined
+    | undefined;
 
-  if (!task) return null
+  if (!task) return null;
 
-  const newStatus = task.status === 'completed' ? 'open' : 'completed'
-  return updateTask(id, { status: newStatus })
+  const newStatus = task.status === 'completed' ? 'open' : 'completed';
+  return updateTask(id, { status: newStatus });
 }
 
 export function getAllTasks(): Task[] {
-  const db = getDatabase()
+  const db = getDatabase();
   return db
     .prepare(
       `
@@ -189,5 +189,5 @@ export function getAllTasks(): Task[] {
     ORDER BY date ASC, priority DESC, created_at ASC
   `
     )
-    .all() as Task[]
+    .all() as Task[];
 }

@@ -1,15 +1,15 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { TASK_COLORS } from '../../../../shared/types'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { TASK_COLORS } from '../../../../shared/types';
 
 interface ColorPickerProps {
-  value: string
-  onChange: (color: string) => void
+  value: string;
+  onChange: (color: string) => void;
 }
 
 function ColorPicker({ value, onChange }: ColorPickerProps): React.JSX.Element {
-  const { t, i18n } = useTranslation()
-  const lang = i18n.language as 'ru' | 'en'
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language as 'ru' | 'en';
 
   return (
     <div>
@@ -30,7 +30,7 @@ function ColorPicker({ value, onChange }: ColorPickerProps): React.JSX.Element {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export { ColorPicker }
+export { ColorPicker };

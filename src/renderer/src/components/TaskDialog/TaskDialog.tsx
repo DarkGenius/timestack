@@ -1,54 +1,54 @@
-import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/Dialog'
-import { Button } from '../ui/Button'
-import { Input } from '../ui/Input'
-import { Textarea } from '../ui/Textarea'
-import { ColorPicker } from './ColorPicker'
-import { PrioritySelect } from './PrioritySelect'
-import { useTaskStore } from '../../store/taskStore'
-import { useUIStore } from '../../store/uiStore'
-import type { TaskPriority, CreateTaskInput, UpdateTaskInput } from '../../../../shared/types'
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/Dialog';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Textarea } from '../ui/Textarea';
+import { ColorPicker } from './ColorPicker';
+import { PrioritySelect } from './PrioritySelect';
+import { useTaskStore } from '../../store/taskStore';
+import { useUIStore } from '../../store/uiStore';
+import type { TaskPriority, CreateTaskInput, UpdateTaskInput } from '../../../../shared/types';
 
 function TaskDialog(): React.JSX.Element {
-  const { t } = useTranslation()
-  const { isTaskDialogOpen, editingTask, selectedDate, closeTaskDialog } = useUIStore()
-  const { createTask, updateTask, deleteTask } = useTaskStore()
+  const { t } = useTranslation();
+  const { isTaskDialogOpen, editingTask, selectedDate, closeTaskDialog } = useUIStore();
+  const { createTask, updateTask, deleteTask } = useTaskStore();
 
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [date, setDate] = useState(selectedDate)
-  const [priority, setPriority] = useState<TaskPriority>('normal')
-  const [color, setColor] = useState('#e5e7eb')
-  const [estimatedTime, setEstimatedTime] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState(selectedDate);
+  const [priority, setPriority] = useState<TaskPriority>('normal');
+  const [color, setColor] = useState('#e5e7eb');
+  const [estimatedTime, setEstimatedTime] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Reset form when dialog opens/closes or editing task changes
   useEffect(() => {
     if (isTaskDialogOpen) {
       if (editingTask) {
-        setTitle(editingTask.title)
-        setDescription(editingTask.description || '')
-        setDate(editingTask.date)
-        setPriority(editingTask.priority)
-        setColor(editingTask.color)
-        setEstimatedTime(editingTask.estimated_time?.toString() || '')
+        setTitle(editingTask.title);
+        setDescription(editingTask.description || '');
+        setDate(editingTask.date);
+        setPriority(editingTask.priority);
+        setColor(editingTask.color);
+        setEstimatedTime(editingTask.estimated_time?.toString() || '');
       } else {
-        setTitle('')
-        setDescription('')
-        setDate(selectedDate)
-        setPriority('normal')
-        setColor('#e5e7eb')
-        setEstimatedTime('')
+        setTitle('');
+        setDescription('');
+        setDate(selectedDate);
+        setPriority('normal');
+        setColor('#e5e7eb');
+        setEstimatedTime('');
       }
     }
-  }, [isTaskDialogOpen, editingTask, selectedDate])
+  }, [isTaskDialogOpen, editingTask, selectedDate]);
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault()
-    if (!title.trim()) return
+    e.preventDefault();
+    if (!title.trim()) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       if (editingTask) {
@@ -59,8 +59,8 @@ function TaskDialog(): React.JSX.Element {
           priority,
           color,
           estimated_time: estimatedTime ? parseInt(estimatedTime) : null
-        }
-        await updateTask(editingTask.id, updates)
+        };
+        await updateTask(editingTask.id, updates);
       } else {
         const input: CreateTaskInput = {
           title: title.trim(),
@@ -69,28 +69,28 @@ function TaskDialog(): React.JSX.Element {
           priority,
           color,
           estimated_time: estimatedTime ? parseInt(estimatedTime) : undefined
-        }
-        await createTask(input)
+        };
+        await createTask(input);
       }
-      closeTaskDialog()
+      closeTaskDialog();
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleDelete = async (): Promise<void> => {
-    if (!editingTask) return
+    if (!editingTask) return;
 
     if (window.confirm(t('confirm.deleteTask'))) {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       try {
-        await deleteTask(editingTask.id)
-        closeTaskDialog()
+        await deleteTask(editingTask.id);
+        closeTaskDialog();
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     }
-  }
+  };
 
   return (
     <Dialog open={isTaskDialogOpen} onClose={closeTaskDialog}>
@@ -165,7 +165,7 @@ function TaskDialog(): React.JSX.Element {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
-export { TaskDialog }
+export { TaskDialog };

@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3'
+import Database from 'better-sqlite3';
 
 export function runMigrations(db: Database.Database): void {
   // Create tasks table
@@ -20,17 +20,17 @@ export function runMigrations(db: Database.Database): void {
       sync_status TEXT DEFAULT 'synced',
       moved_from_date TEXT
     )
-  `)
+  `);
 
   // Add moved_from_date column if it doesn't exist
   try {
-    const tableInfo = db.prepare('PRAGMA table_info(tasks)').all() as { name: string }[]
-    const hasMovedFromDate = tableInfo.some((col) => col.name === 'moved_from_date')
+    const tableInfo = db.prepare('PRAGMA table_info(tasks)').all() as { name: string }[];
+    const hasMovedFromDate = tableInfo.some((col) => col.name === 'moved_from_date');
     if (!hasMovedFromDate) {
-      db.exec('ALTER TABLE tasks ADD COLUMN moved_from_date TEXT')
+      db.exec('ALTER TABLE tasks ADD COLUMN moved_from_date TEXT');
     }
   } catch (error) {
-    console.error('Failed to add moved_from_date column:', error)
+    console.error('Failed to add moved_from_date column:', error);
   }
 
   // Create indexes for fast queries
@@ -40,7 +40,7 @@ export function runMigrations(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);
     CREATE INDEX IF NOT EXISTS idx_tasks_updated ON tasks(updated_at);
     CREATE INDEX IF NOT EXISTS idx_tasks_deleted ON tasks(deleted_at);
-  `)
+  `);
 
   // Create sync_log table for future S3 sync
   db.exec(`
@@ -51,7 +51,7 @@ export function runMigrations(db: Database.Database): void {
       message TEXT,
       s3_version TEXT
     )
-  `)
+  `);
 
   // Create settings table
   db.exec(`
@@ -59,5 +59,5 @@ export function runMigrations(db: Database.Database): void {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     )
-  `)
+  `);
 }

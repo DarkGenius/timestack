@@ -1,3 +1,3 @@
-export { TaskListView } from './TaskListView'
-export { TaskCard } from './TaskCard'
-export { FilterPanel } from './FilterPanel'
+export { TaskListView } from './TaskListView';
+export { TaskCard } from './TaskCard';
+export { FilterPanel } from './FilterPanel';

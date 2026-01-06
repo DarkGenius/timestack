@@ -1,53 +1,53 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Badge } from '../ui/Badge'
-import { useTaskStore } from '../../store/taskStore'
-import { useUIStore } from '../../store/uiStore'
-import type { Task } from '../../../../shared/types'
-import { PRIORITY_COLORS } from '../../../../shared/types'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Badge } from '../ui/Badge';
+import { useTaskStore } from '../../store/taskStore';
+import { useUIStore } from '../../store/uiStore';
+import type { Task } from '../../../../shared/types';
+import { PRIORITY_COLORS } from '../../../../shared/types';
 
 interface TaskCardProps {
-  task: Task
+  task: Task;
 }
 
 function formatMinutes(minutes: number): string {
-  if (minutes < 60) return `${minutes}m`
-  const hours = Math.floor(minutes / 60)
-  const mins = minutes % 60
-  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
 }
 
 function TaskCard({ task }: TaskCardProps): React.JSX.Element {
-  const { t } = useTranslation()
-  const { toggleTask } = useTaskStore()
-  const { openEditTaskDialog, setIsTaskDragging, setDraggedTaskId } = useUIStore()
+  const { t } = useTranslation();
+  const { toggleTask } = useTaskStore();
+  const { openEditTaskDialog, setIsTaskDragging, setDraggedTaskId } = useUIStore();
 
   const handleToggle = async (e: React.MouseEvent): Promise<void> => {
-    e.stopPropagation()
-    const isCompleting = task.status !== 'completed'
-    const updatedTask = await toggleTask(task.id)
+    e.stopPropagation();
+    const isCompleting = task.status !== 'completed';
+    const updatedTask = await toggleTask(task.id);
 
     if (isCompleting && updatedTask && updatedTask.status === 'completed') {
-      useUIStore.getState().openActualTimeDialog(updatedTask)
+      useUIStore.getState().openActualTimeDialog(updatedTask);
     }
-  }
+  };
 
   const handleClick = (): void => {
-    openEditTaskDialog(task)
-  }
+    openEditTaskDialog(task);
+  };
 
   const handleDragStart = (e: React.DragEvent): void => {
-    setIsTaskDragging(true)
-    setDraggedTaskId(task.id)
+    setIsTaskDragging(true);
+    setDraggedTaskId(task.id);
     // Set drag image or data if needed
-    e.dataTransfer.setData('application/timestack-task-id', task.id)
-    e.dataTransfer.effectAllowed = 'move'
-  }
+    e.dataTransfer.setData('application/timestack-task-id', task.id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
 
   const handleDragEnd = (): void => {
-    setIsTaskDragging(false)
-    setDraggedTaskId(null)
-  }
+    setIsTaskDragging(false);
+    setDraggedTaskId(null);
+  };
 
   return (
     <div
@@ -150,7 +150,7 @@ function TaskCard({ task }: TaskCardProps): React.JSX.Element {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { TaskCard }
+export { TaskCard };
