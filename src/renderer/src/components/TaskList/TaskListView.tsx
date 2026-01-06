@@ -30,6 +30,26 @@ function TaskListView(): React.JSX.Element {
     });
   }, [tasks, selectedDate, statusFilter, priorityFilter]);
 
+  const completedCount = useMemo(
+    () => filteredTasks.filter((t) => t.status === 'completed').length,
+    [filteredTasks]
+  );
+
+  // Update window title with task counts
+  useEffect(() => {
+    const total = filteredTasks.length;
+    if (total === 0) {
+      document.title = 'TimeStack';
+      return;
+    }
+
+    const tasksText = t('task.tasksCount', { count: total });
+    const completedText =
+      completedCount > 0 ? ` (${t('task.completedCount', { count: completedCount })})` : '';
+
+    document.title = `${tasksText}${completedText} - TimeStack`;
+  }, [filteredTasks.length, completedCount, t]);
+
   // Sort tasks: open first (by priority), then completed
   const sortedTasks = useMemo(() => {
     const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 };
@@ -50,8 +70,6 @@ function TaskListView(): React.JSX.Element {
     : selectedDate;
 
   const isToday = selectedDate === format(new Date(), 'yyyy-MM-dd');
-
-  const completedCount = filteredTasks.filter((t) => t.status === 'completed').length;
 
   return (
     <div className="flex flex-col h-full">

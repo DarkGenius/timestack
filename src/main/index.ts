@@ -1,7 +1,15 @@
-import { app, shell, BrowserWindow } from 'electron';
+import { app, shell, BrowserWindow, nativeImage } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
+import iconWin from '../../resources/icon.ico?asset';
+
+function getAppIcon(): Electron.NativeImage | string {
+  if (process.platform === 'win32') {
+    return nativeImage.createFromPath(iconWin);
+  }
+  return icon;
+}
 import { getDatabase, closeDatabase } from './database/db';
 import { registerIpcHandlers } from './ipc/handlers';
 import { WindowStateManager } from './window-state';
@@ -22,7 +30,7 @@ function createWindow(): void {
     y: windowState.y,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: getAppIcon(),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -61,7 +69,7 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron');
+  electronApp.setAppUserModelId('com.timestack.app');
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
