@@ -4,6 +4,8 @@ import { dateTime, DateTime } from '@gravity-ui/date-utils'
 import { FilterPanel } from './TaskList/FilterPanel'
 import { useUIStore } from '../store/uiStore'
 
+import logo from '../assets/logo.png'
+
 export const Sidebar = (): React.JSX.Element => {
   const { selectedDate, setSelectedDate } = useUIStore()
 
@@ -15,8 +17,9 @@ export const Sidebar = (): React.JSX.Element => {
 
   return (
     <div className="w-80 bg-white border-r border-gray-200 h-full flex flex-col p-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">TimeStack</h1>
+      <div className="mb-6 flex items-center gap-4">
+        <img src={logo} alt="TimeStack" className="w-12 h-12 object-contain" />
+        <h1 className="text-3xl font-bold text-gray-800">TimeStack</h1>
       </div>
 
       <div className="flex justify-center">
