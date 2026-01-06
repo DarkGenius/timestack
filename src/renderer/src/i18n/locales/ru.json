@@ -49,7 +49,8 @@
     "tasksCount_many": "{{count}} задач",
     "completedCount_one": "{{count}} выполнена",
     "completedCount_few": "{{count}} выполнены",
-    "completedCount_many": "{{count}} выполнено"
+    "completedCount_many": "{{count}} выполнено",
+    "moveToNextDay": "Перенести на следующий день"
   },
   "filter": {
     "all": "Все",

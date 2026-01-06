@@ -20,7 +20,7 @@ function formatMinutes(minutes: number): string {
 function TaskCard({ task }: TaskCardProps): React.JSX.Element {
   const { t } = useTranslation()
   const { toggleTask } = useTaskStore()
-  const { openEditTaskDialog } = useUIStore()
+  const { openEditTaskDialog, setIsTaskDragging, setDraggedTaskId } = useUIStore()
 
   const handleToggle = async (e: React.MouseEvent): Promise<void> => {
     e.stopPropagation()
@@ -36,10 +36,26 @@ function TaskCard({ task }: TaskCardProps): React.JSX.Element {
     openEditTaskDialog(task)
   }
 
+  const handleDragStart = (e: React.DragEvent): void => {
+    setIsTaskDragging(true)
+    setDraggedTaskId(task.id)
+    // Set drag image or data if needed
+    e.dataTransfer.setData('application/timestack-task-id', task.id)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragEnd = (): void => {
+    setIsTaskDragging(false)
+    setDraggedTaskId(null)
+  }
+
   return (
     <div
       onClick={handleClick}
-      className="p-4 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      className="p-4 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-shadow active:scale-[0.98]"
       style={{
         backgroundColor: task.color,
         borderLeft: `4px solid ${PRIORITY_COLORS[task.priority]}`

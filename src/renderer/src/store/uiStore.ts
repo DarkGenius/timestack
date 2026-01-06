@@ -16,6 +16,10 @@ interface UIState {
   statusFilter: TaskStatus | 'all'
   priorityFilter: TaskPriority | 'all'
 
+  // Dragging state
+  isTaskDragging: boolean
+  draggedTaskId: string | null
+
   // Actions
   setSelectedDate: (date: string | Date) => void
   goToToday: () => void
@@ -31,6 +35,10 @@ interface UIState {
   setStatusFilter: (status: TaskStatus | 'all') => void
   setPriorityFilter: (priority: TaskPriority | 'all') => void
   resetFilters: () => void
+
+  // Dragging actions
+  setIsTaskDragging: (dragging: boolean) => void
+  setDraggedTaskId: (id: string | null) => void
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -44,6 +52,9 @@ export const useUIStore = create<UIState>((set) => ({
 
   statusFilter: 'all',
   priorityFilter: 'all',
+
+  isTaskDragging: false,
+  draggedTaskId: null,
 
   // View actions
   setSelectedDate: (date) => {
@@ -90,5 +101,9 @@ export const useUIStore = create<UIState>((set) => ({
   // Filter actions
   setStatusFilter: (status) => set({ statusFilter: status }),
   setPriorityFilter: (priority) => set({ priorityFilter: priority }),
-  resetFilters: () => set({ statusFilter: 'all', priorityFilter: 'all' })
+  resetFilters: () => set({ statusFilter: 'all', priorityFilter: 'all' }),
+
+  // Dragging actions
+  setIsTaskDragging: (dragging) => set({ isTaskDragging: dragging }),
+  setDraggedTaskId: (id) => set({ draggedTaskId: id })
 }))

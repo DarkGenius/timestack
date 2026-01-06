@@ -47,7 +47,8 @@
     "tasksCount_one": "{{count}} task",
     "tasksCount_other": "{{count}} tasks",
     "completedCount_one": "{{count}} completed",
-    "completedCount_other": "{{count}} completed"
+    "completedCount_other": "{{count}} completed",
+    "moveToNextDay": "Move to next day"
   },
   "filter": {
     "all": "All",

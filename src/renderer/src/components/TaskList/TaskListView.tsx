@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { format } from 'date-fns'
 import { ru, enUS } from 'date-fns/locale'
 import { TaskCard } from './TaskCard'
+import { MoveToNextDayZone } from './MoveToNextDayZone'
 import { Button } from '../ui/Button'
 import { useTaskStore } from '../../store/taskStore'
 import { useUIStore } from '../../store/uiStore'
@@ -107,6 +108,8 @@ function TaskListView(): React.JSX.Element {
         ) : (
           sortedTasks.map((task) => <TaskCard key={task.id} task={task} />)
         )}
+
+        <MoveToNextDayZone />
       </div>
     </div>
   )
