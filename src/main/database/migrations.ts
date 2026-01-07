@@ -71,7 +71,7 @@ export function runMigrations(db: Database.Database): void {
   db.exec(`
     CREATE TABLE IF NOT EXISTS sync_metadata (
       user_id TEXT PRIMARY KEY,
-      last_sync_at TEXT NOT NULL
+      last_sync_at TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'
     )
   `);
 }
