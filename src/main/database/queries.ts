@@ -213,11 +213,13 @@ export function getPendingTasks(userId: string): Task[] {
     .all(userId) as Task[];
 }
 
-export function markTasksAsSynced(ids: string[]): void {
+export function markTasksAsSynced(ids: string[], userId: string): void {
   const db = getDatabase();
-  const stmt = db.prepare("UPDATE tasks SET sync_status = 'synced' WHERE id = ?");
+  const stmt = db.prepare(
+    "UPDATE tasks SET sync_status = 'synced' WHERE id = ? AND (user_id = ? OR user_id IS NULL)"
+  );
   const transaction = db.transaction((taskIds: string[]) => {
-    for (const id of taskIds) stmt.run(id);
+    for (const id of taskIds) stmt.run(id, userId);
   });
   transaction(ids);
 }

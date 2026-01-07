@@ -172,7 +172,10 @@ export class SyncService {
       pushedCount++;
     }
 
-    markTasksAsSynced(pendingTasks.slice(0, pushedCount).map((t) => t.id));
+    markTasksAsSynced(
+      pendingTasks.slice(0, pushedCount).map((t) => t.id),
+      this.currentUserId
+    );
     return pushedCount;
   }
 }
