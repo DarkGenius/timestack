@@ -70,7 +70,11 @@ function App(): React.JSX.Element {
       } else {
         setUser(null);
         setSyncStatus('none');
-        await window.api.auth.setSession(null);
+        try {
+          await window.api.auth.setSession(null);
+        } catch (error) {
+          console.error('Sign-out sync failed:', error);
+        }
       }
     });
 
