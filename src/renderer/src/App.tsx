@@ -7,6 +7,7 @@ import { TaskListView } from './components/TaskList';
 import { TaskDialog, ActualTimeDialog } from './components/TaskDialog';
 import { SettingsDialog } from './components/SettingsDialog';
 import { useUIStore } from './store/uiStore';
+import { onAuthStateChanged, auth } from './services/firebase';
 
 function App(): React.JSX.Element {
   const { theme, language } = useUIStore();
@@ -41,6 +42,38 @@ function App(): React.JSX.Element {
       document.documentElement.classList.remove('dark');
     }
   }, [activeTheme]);
+
+  // Auth & Sync Initialization
+  const { setUser, setSyncStatus, neonConnectionString } = useUIStore();
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const userData = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        };
+        setUser(userData);
+
+        // Notify Main Process and trigger initial sync
+        setSyncStatus('syncing');
+        try {
+          await window.api.auth.setSession(firebaseUser.uid, neonConnectionString);
+          setSyncStatus('synced');
+        } catch (error) {
+          console.error('Auth sync failed:', error);
+          setSyncStatus('error');
+        }
+      } else {
+        setUser(null);
+        setSyncStatus('none');
+        await window.api.auth.setSession(null, null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [setUser, setSyncStatus, neonConnectionString]);
 
   return (
     <ThemeProvider theme={activeTheme}>

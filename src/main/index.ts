@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { app, shell, BrowserWindow, nativeImage } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
@@ -13,6 +14,9 @@ function getAppIcon(): Electron.NativeImage | string {
 import { getDatabase, closeDatabase } from './database/db';
 import { registerIpcHandlers } from './ipc/handlers';
 import { WindowStateManager } from './window-state';
+import { SyncService } from './services/SyncService';
+
+const syncService = new SyncService(process.env.VITE_NEON_CONNECTION_STRING || '');
 
 const windowManager = new WindowStateManager('main', {
   width: 1200,
@@ -82,7 +86,7 @@ app.whenReady().then(() => {
   getDatabase();
 
   // Register IPC handlers
-  registerIpcHandlers();
+  registerIpcHandlers(syncService);
 
   createWindow();
 

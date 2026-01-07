@@ -10,6 +10,7 @@ import {
   toggleTaskStatus,
   getAllTasks
 } from '../database/queries';
+import { SyncService } from '../services/SyncService';
 import type {
   CreateTaskInput,
   UpdateTaskInput,
@@ -27,7 +28,34 @@ function wrapResponse<T>(fn: () => T): ApiResponse<T> {
   }
 }
 
-export function registerIpcHandlers(): void {
+export function registerIpcHandlers(syncService: SyncService): void {
+  // Auth handlers
+  ipcMain.handle(
+    'auth:setSession',
+    (_event, userId: string | null, connectionString: string | null) => {
+      return wrapResponse(async () => {
+        syncService.setUserId(userId);
+        if (userId && connectionString) {
+          await syncService.connect(connectionString);
+          await syncService.sync();
+        } else {
+          await syncService.disconnect();
+        }
+        return true;
+      });
+    }
+  );
+
+  ipcMain.handle('auth:getSession', () => {
+    // This is simplified; you might want to store this in a more persistent way
+    return wrapResponse(() => ({ userId: syncService.getUserId() }));
+  });
+
+  // Sync handlers
+  ipcMain.handle('sync:now', () => {
+    return wrapResponse(() => syncService.sync());
+  });
+
   // Create task
   ipcMain.handle('tasks:create', (_event, input: CreateTaskInput) => {
     return wrapResponse(() => createTask(input));

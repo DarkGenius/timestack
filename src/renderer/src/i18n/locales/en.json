@@ -90,6 +90,17 @@
       "en": "English",
       "ru": "Russian"
     },
-    "jumpToDateAfterMove": "Navigate to task date after move"
+    "jumpToDateAfterMove": "Navigate to task date after move",
+    "neonConnectionString": "Neon Connection String (PostgreSQL)"
+  },
+  "auth": {
+    "login": "Sign in with Google",
+    "logout": "Logout"
+  },
+  "sync": {
+    "synced": "Synced",
+    "syncing": "Syncing...",
+    "none": "Local only",
+    "error": "Sync Error"
   }
 }

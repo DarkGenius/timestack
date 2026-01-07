@@ -44,6 +44,7 @@ export interface Task {
   deleted_at: string | null; // ISO 8601 timestamp (soft delete)
   sync_status: SyncStatus;
   moved_from_date: string | null; // ISO 8601 date (YYYY-MM-DD)
+  user_id: string | null; // Firebase UID
 }
 
 // Input for creating a new task
@@ -54,6 +55,7 @@ export interface CreateTaskInput {
   priority?: TaskPriority;
   color?: string;
   estimated_time?: number;
+  user_id?: string | null;
 }
 
 // Input for updating a task
@@ -67,6 +69,7 @@ export interface UpdateTaskInput {
   actual_time?: number | null;
   status?: TaskStatus;
   moved_from_date?: string | null;
+  user_id?: string | null;
 }
 
 // Filters for querying tasks
@@ -76,6 +79,7 @@ export interface TaskFilters {
   endDate?: string;
   status?: TaskStatus | 'all';
   priority?: TaskPriority | 'all';
+  user_id?: string | null;
 }
 
 // API response wrapper

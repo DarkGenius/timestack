@@ -92,6 +92,17 @@
       "en": "English",
       "ru": "Русский"
     },
-    "jumpToDateAfterMove": "Переходить к дате задачи при перемещении"
+    "jumpToDateAfterMove": "Переходить к дате задачи при перемещении",
+    "neonConnectionString": "Строка подключения к Neon (PostgreSQL)"
+  },
+  "auth": {
+    "login": "Войти через Google",
+    "logout": "Выйти"
+  },
+  "sync": {
+    "synced": "Синхронизировано",
+    "syncing": "Синхронизация...",
+    "none": "Только локально",
+    "error": "Ошибка синхр."
   }
 }

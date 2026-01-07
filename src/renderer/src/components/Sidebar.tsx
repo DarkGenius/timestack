@@ -7,12 +7,26 @@ import { useUIStore } from '../store/uiStore';
 import { useTaskStore } from '../store/taskStore';
 import { Button } from './ui/Button';
 import { useTranslation } from 'react-i18next';
+import { signInWithGoogle, logout as firebaseLogout } from '../services/firebase';
+import { ArrowRightFromSquare, ArrowRotateLeft } from '@gravity-ui/icons';
+import { GoogleIcon } from './ui';
 
 import logo from '../assets/logo.png';
 
 export const Sidebar = (): React.JSX.Element => {
   const { t, i18n } = useTranslation();
-  const { selectedDate, setSelectedDate, openSettingsDialog, isTaskDragging, draggedTaskId, setIsTaskDragging, setDraggedTaskId, jumpToDateAfterMove } = useUIStore();
+  const {
+    selectedDate,
+    setSelectedDate,
+    openSettingsDialog,
+    isTaskDragging,
+    draggedTaskId,
+    setIsTaskDragging,
+    setDraggedTaskId,
+    jumpToDateAfterMove,
+    user,
+    syncStatus
+  } = useUIStore();
   const { updateTask, loadTasksByDate } = useTaskStore();
   const [isOver, setIsOver] = useState(false);
   const [focusedDate, setFocusedDate] = useState<Date>(new Date(selectedDate));
@@ -78,7 +92,7 @@ export const Sidebar = (): React.JSX.Element => {
     dragCounter.current = 0;
 
     const taskId = e.dataTransfer.getData('application/timestack-task-id') || draggedTaskId;
-    
+
     if (taskId) {
       const element = document.elementFromPoint(e.clientX, e.clientY);
       if (element) {
@@ -88,18 +102,20 @@ export const Sidebar = (): React.JSX.Element => {
           if (container) {
             const buttons = Array.from(container.querySelectorAll('.g-date-calendar__button'));
             const index = buttons.indexOf(button as HTMLElement);
-            
+
             if (index !== -1) {
               // Calculate the date based on the index in the 6x7 grid
               // Gravity UI Calendar for 'days' mode shows 42 days starting from the start of the week of the first day of the month
-              const startOfMonth = dateTime({ input: focusedDate, lang: i18n.language }).startOf('month');
+              const startOfMonth = dateTime({ input: focusedDate, lang: i18n.language }).startOf(
+                'month'
+              );
               const startOfGrid = startOfMonth.startOf('week');
               const targetDate = startOfGrid.add({ days: index });
-              
+
               if (targetDate) {
                 const dateStr = targetDate.format('YYYY-MM-DD');
                 await updateTask(taskId, { date: dateStr });
-                
+
                 if (jumpToDateAfterMove) {
                   setSelectedDate(targetDate.toDate());
                   await loadTasksByDate(dateStr);
@@ -128,19 +144,19 @@ export const Sidebar = (): React.JSX.Element => {
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">TimeStack</h1>
       </div>
 
-      <div 
+      <div
         className={`flex justify-center rounded-xl p-2 transition-colors duration-300 ${isOver ? 'bg-blue-50 dark:bg-blue-900/20 ring-2 ring-blue-500 ring-dashed' : ''}`}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <Calendar 
-          value={currentDate} 
-          onUpdate={handleDateChange} 
+        <Calendar
+          value={currentDate}
+          onUpdate={handleDateChange}
           focusedValue={currentFocusedDate}
           onFocusUpdate={handleFocusUpdate}
-          size="l" 
+          size="l"
         />
       </div>
 
@@ -148,7 +164,58 @@ export const Sidebar = (): React.JSX.Element => {
         <FilterPanel />
       </div>
 
-      <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+      <div className="mt-auto pt-4 flex flex-col gap-2 border-t border-gray-100 dark:border-gray-700">
+        {user ? (
+          <div className="mb-2 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName || ''}
+                  className="w-8 h-8 rounded-full"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                  {user.displayName?.[0] || 'U'}
+                </div>
+              )}
+              <div className="overflow-hidden">
+                <p className="text-sm font-medium truncate">{user.displayName || user.email}</p>
+                <div className="flex items-center gap-1">
+                  <span
+                    className={`text-[10px] uppercase font-bold ${syncStatus === 'synced' ? 'text-green-500' : syncStatus === 'syncing' ? 'text-blue-500' : 'text-gray-400'}`}
+                  >
+                    {syncStatus === 'synced'
+                      ? t('sync.synced')
+                      : syncStatus === 'syncing'
+                        ? t('sync.syncing')
+                        : t('sync.none')}
+                  </span>
+                  {syncStatus === 'syncing' && (
+                    <ArrowRotateLeft className="w-3 h-3 animate-spin text-blue-500" />
+                  )}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => firebaseLogout()}
+              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              title={t('auth.logout')}
+            >
+              <ArrowRightFromSquare className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            className="w-full mb-2 justify-center border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            onClick={() => signInWithGoogle()}
+          >
+            <GoogleIcon className="w-4 h-4 mr-2" />
+            {t('auth.login')}
+          </Button>
+        )}
+
         <Button
           variant="ghost"
           className="w-full justify-start text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"

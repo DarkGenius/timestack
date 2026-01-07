@@ -19,8 +19,22 @@ interface TasksAPI {
   getAll: () => Promise<ApiResponse<Task[]>>;
 }
 
+interface AuthAPI {
+  setSession: (
+    userId: string | null,
+    connectionString: string | null
+  ) => Promise<ApiResponse<boolean>>;
+  getSession: () => Promise<ApiResponse<{ userId: string | null }>>;
+}
+
+interface SyncAPI {
+  syncNow: () => Promise<ApiResponse<void>>;
+}
+
 interface API {
   tasks: TasksAPI;
+  auth: AuthAPI;
+  sync: SyncAPI;
 }
 
 declare global {

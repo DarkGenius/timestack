@@ -18,19 +18,24 @@ export function runMigrations(db: Database.Database): void {
       updated_at TEXT NOT NULL,
       deleted_at TEXT,
       sync_status TEXT DEFAULT 'synced',
-      moved_from_date TEXT
+      moved_from_date TEXT,
+      user_id TEXT
     )
   `);
 
-  // Add moved_from_date column if it doesn't exist
+  // Add user_id column if it doesn't exist
   try {
     const tableInfo = db.prepare('PRAGMA table_info(tasks)').all() as { name: string }[];
+    const hasUserId = tableInfo.some((col) => col.name === 'user_id');
+    if (!hasUserId) {
+      db.exec('ALTER TABLE tasks ADD COLUMN user_id TEXT');
+    }
     const hasMovedFromDate = tableInfo.some((col) => col.name === 'moved_from_date');
     if (!hasMovedFromDate) {
       db.exec('ALTER TABLE tasks ADD COLUMN moved_from_date TEXT');
     }
   } catch (error) {
-    console.error('Failed to add moved_from_date column:', error);
+    console.error('Failed to update tasks table columns:', error);
   }
 
   // Create indexes for fast queries
@@ -40,6 +45,7 @@ export function runMigrations(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);
     CREATE INDEX IF NOT EXISTS idx_tasks_updated ON tasks(updated_at);
     CREATE INDEX IF NOT EXISTS idx_tasks_deleted ON tasks(deleted_at);
+    CREATE INDEX IF NOT EXISTS idx_tasks_user ON tasks(user_id);
   `);
 
   // Create sync_log table for future S3 sync
@@ -58,6 +64,14 @@ export function runMigrations(db: Database.Database): void {
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
+    )
+  `);
+
+  // Create sync_metadata table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS sync_metadata (
+      user_id TEXT PRIMARY KEY,
+      last_sync_at TEXT NOT NULL
     )
   `);
 }

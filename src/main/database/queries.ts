@@ -22,12 +22,13 @@ export function createTask(input: CreateTaskInput): Task {
     updated_at: now,
     deleted_at: null,
     sync_status: 'pending',
-    moved_from_date: null
+    moved_from_date: null,
+    user_id: input.user_id || null
   };
 
   const stmt = db.prepare(`
-    INSERT INTO tasks (id, title, description, date, priority, color, estimated_time, actual_time, status, completed_at, created_at, updated_at, deleted_at, sync_status, moved_from_date)
-    VALUES (@id, @title, @description, @date, @priority, @color, @estimated_time, @actual_time, @status, @completed_at, @created_at, @updated_at, @deleted_at, @sync_status, @moved_from_date)
+    INSERT INTO tasks (id, title, description, date, priority, color, estimated_time, actual_time, status, completed_at, created_at, updated_at, deleted_at, sync_status, moved_from_date, user_id)
+    VALUES (@id, @title, @description, @date, @priority, @color, @estimated_time, @actual_time, @status, @completed_at, @created_at, @updated_at, @deleted_at, @sync_status, @moved_from_date, @user_id)
   `);
 
   stmt.run(task);
@@ -76,7 +77,8 @@ export function updateTask(id: string, updates: UpdateTaskInput): Task | null {
       completed_at = @completed_at,
       updated_at = @updated_at,
       sync_status = @sync_status,
-      moved_from_date = @moved_from_date
+      moved_from_date = @moved_from_date,
+      user_id = @user_id
     WHERE id = @id
   `);
 
@@ -139,7 +141,12 @@ export function getTasksWithFilters(filters: TaskFilters): Task[] {
   const db = getDatabase();
 
   let query = 'SELECT * FROM tasks WHERE deleted_at IS NULL';
-  const params: Record<string, string> = {};
+  const params: Record<string, string | null> = {};
+
+  if (filters.user_id) {
+    query += ' AND (user_id = @user_id OR user_id IS NULL)';
+    params.user_id = filters.user_id;
+  }
 
   if (filters.date) {
     query += ' AND date = @date';
@@ -190,4 +197,56 @@ export function getAllTasks(): Task[] {
   `
     )
     .all() as Task[];
+}
+
+// --- Sync Specific Queries ---
+
+export function getPendingTasks(userId: string): Task[] {
+  const db = getDatabase();
+  return db
+    .prepare(
+      `
+    SELECT * FROM tasks 
+    WHERE sync_status = 'pending' AND (user_id = ? OR user_id IS NULL)
+  `
+    )
+    .all(userId) as Task[];
+}
+
+export function markTasksAsSynced(ids: string[]): void {
+  const db = getDatabase();
+  const stmt = db.prepare("UPDATE tasks SET sync_status = 'synced' WHERE id = ?");
+  const transaction = db.transaction((taskIds: string[]) => {
+    for (const id of taskIds) stmt.run(id);
+  });
+  transaction(ids);
+}
+
+export function upsertTasks(tasks: Task[]): void {
+  const db = getDatabase();
+  const stmt = db.prepare(`
+    INSERT INTO tasks (id, title, description, date, priority, color, estimated_time, actual_time, status, completed_at, created_at, updated_at, deleted_at, sync_status, moved_from_date, user_id)
+    VALUES (@id, @title, @description, @date, @priority, @color, @estimated_time, @actual_time, @status, @completed_at, @created_at, @updated_at, @deleted_at, 'synced', @moved_from_date, @user_id)
+    ON CONFLICT(id) DO UPDATE SET
+      title = excluded.title,
+      description = excluded.description,
+      date = excluded.date,
+      priority = excluded.priority,
+      color = excluded.color,
+      estimated_time = excluded.estimated_time,
+      actual_time = excluded.actual_time,
+      status = excluded.status,
+      completed_at = excluded.completed_at,
+      updated_at = excluded.updated_at,
+      deleted_at = excluded.deleted_at,
+      sync_status = 'synced',
+      moved_from_date = excluded.moved_from_date,
+      user_id = excluded.user_id
+    WHERE excluded.updated_at > tasks.updated_at
+  `);
+
+  const transaction = db.transaction((taskList: Task[]) => {
+    for (const task of taskList) stmt.run(task);
+  });
+  transaction(tasks);
 }

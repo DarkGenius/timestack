@@ -6,8 +6,15 @@ import { useTaskStore } from '../../store/taskStore';
 
 export const MoveToNextDayZone: React.FC = () => {
   const { t } = useTranslation();
-  const { isTaskDragging, draggedTaskId, selectedDate, setSelectedDate, jumpToDateAfterMove, setIsTaskDragging, setDraggedTaskId } =
-    useUIStore();
+  const {
+    isTaskDragging,
+    draggedTaskId,
+    selectedDate,
+    setSelectedDate,
+    jumpToDateAfterMove,
+    setIsTaskDragging,
+    setDraggedTaskId
+  } = useUIStore();
   const { updateTask, loadTasksByDate } = useTaskStore();
   const [isOver, setIsOver] = useState(false);
 
@@ -31,7 +38,7 @@ export const MoveToNextDayZone: React.FC = () => {
     if (taskId) {
       const nextDate = format(addDays(new Date(selectedDate), 1), 'yyyy-MM-dd');
       await updateTask(taskId, { date: nextDate });
-      
+
       if (jumpToDateAfterMove) {
         setSelectedDate(nextDate);
         await loadTasksByDate(nextDate);

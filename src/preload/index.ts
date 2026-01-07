@@ -34,9 +34,25 @@ const tasksAPI = {
   getAll: (): Promise<ApiResponse<Task[]>> => ipcRenderer.invoke('tasks:getAll')
 };
 
+const authAPI = {
+  setSession: (
+    userId: string | null,
+    connectionString: string | null
+  ): Promise<ApiResponse<boolean>> =>
+    ipcRenderer.invoke('auth:setSession', userId, connectionString),
+  getSession: (): Promise<ApiResponse<{ userId: string | null }>> =>
+    ipcRenderer.invoke('auth:getSession')
+};
+
+const syncAPI = {
+  syncNow: (): Promise<ApiResponse<void>> => ipcRenderer.invoke('sync:now')
+};
+
 // Custom APIs for renderer
 const api = {
-  tasks: tasksAPI
+  tasks: tasksAPI,
+  auth: authAPI,
+  sync: syncAPI
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

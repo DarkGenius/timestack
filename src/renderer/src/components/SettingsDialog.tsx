@@ -7,8 +7,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/Dialog';
 
 export const SettingsDialog = (): React.JSX.Element => {
   const { t, i18n } = useTranslation();
-  const { isSettingsDialogOpen, closeSettingsDialog, language, setLanguage, theme, setTheme, jumpToDateAfterMove, setJumpToDateAfterMove } =
-    useUIStore();
+  const {
+    isSettingsDialogOpen,
+    closeSettingsDialog,
+    language,
+    setLanguage,
+    theme,
+    setTheme,
+    jumpToDateAfterMove,
+    setJumpToDateAfterMove,
+    neonConnectionString,
+    setNeonConnectionString
+  } = useUIStore();
 
   const handleLanguageChange = (value: string): void => {
     setLanguage(value);
@@ -70,11 +80,23 @@ export const SettingsDialog = (): React.JSX.Element => {
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               {t('settings.jumpToDateAfterMove')}
             </label>
-            <Switch
-              checked={jumpToDateAfterMove}
-              onUpdate={setJumpToDateAfterMove}
-              size="l"
+            <Switch checked={jumpToDateAfterMove} onUpdate={setJumpToDateAfterMove} size="l" />
+          </div>
+
+          <div className="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {t('settings.neonConnectionString')}
+            </label>
+            <input
+              type="password"
+              value={neonConnectionString}
+              onChange={(e) => setNeonConnectionString(e.target.value)}
+              placeholder="postgresql://user:password@host/dbname"
+              className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm"
             />
+            <p className="text-[10px] text-gray-400">
+              Requires app restart after first entry to establish connection.
+            </p>
           </div>
         </div>
       </DialogContent>
