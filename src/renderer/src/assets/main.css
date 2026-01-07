@@ -118,6 +118,5 @@ body {
 
 /* Calendar drag and drop highlights */
 .calendar-day-drag-over {
-  @apply bg-blue-500/20 dark:bg-blue-400/30 ring-2 ring-blue-500 ring-inset !important;
-  transition: all 0.2s ease;
+  @apply !bg-blue-500/20 dark:!bg-blue-400/30 !ring-2 !ring-blue-500 !ring-inset transition-all duration-200 ease-in-out;
 }
