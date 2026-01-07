@@ -15,9 +15,7 @@ export const SettingsDialog = (): React.JSX.Element => {
     theme,
     setTheme,
     jumpToDateAfterMove,
-    setJumpToDateAfterMove,
-    neonConnectionString,
-    setNeonConnectionString
+    setJumpToDateAfterMove
   } = useUIStore();
 
   const handleLanguageChange = (value: string): void => {
@@ -81,22 +79,6 @@ export const SettingsDialog = (): React.JSX.Element => {
               {t('settings.jumpToDateAfterMove')}
             </label>
             <Switch checked={jumpToDateAfterMove} onUpdate={setJumpToDateAfterMove} size="l" />
-          </div>
-
-          <div className="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t('settings.neonConnectionString')}
-            </label>
-            <input
-              type="password"
-              value={neonConnectionString}
-              onChange={(e) => setNeonConnectionString(e.target.value)}
-              placeholder="postgresql://user:password@host/dbname"
-              className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm"
-            />
-            <p className="text-[10px] text-gray-400">
-              Requires app restart after first entry to establish connection.
-            </p>
           </div>
         </div>
       </DialogContent>

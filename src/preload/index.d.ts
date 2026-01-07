@@ -20,10 +20,7 @@ interface TasksAPI {
 }
 
 interface AuthAPI {
-  setSession: (
-    userId: string | null,
-    connectionString: string | null
-  ) => Promise<ApiResponse<boolean>>;
+  setSession: (userId: string | null) => Promise<ApiResponse<boolean>>;
   getSession: () => Promise<ApiResponse<{ userId: string | null }>>;
 }
 

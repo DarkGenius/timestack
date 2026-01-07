@@ -26,16 +26,6 @@ interface UIState {
   theme: 'light' | 'dark' | 'system';
   jumpToDateAfterMove: boolean;
 
-  // Auth state
-  user: {
-    uid: string;
-    email: string | null;
-    displayName: string | null;
-    photoURL: string | null;
-  } | null;
-  syncStatus: 'synced' | 'syncing' | 'error' | 'none';
-  neonConnectionString: string; // Stored locally for now
-
   // Actions
   setSelectedDate: (date: string | Date) => void;
   goToToday: () => void;
@@ -62,9 +52,6 @@ interface UIState {
   setLanguage: (lang: string) => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setJumpToDateAfterMove: (jump: boolean) => void;
-  setUser: (user: UIState['user']) => void;
-  setSyncStatus: (status: UIState['syncStatus']) => void;
-  setNeonConnectionString: (conn: string) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -86,12 +73,6 @@ export const useUIStore = create<UIState>((set) => ({
   language: localStorage.getItem('language') || 'en',
   theme: (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system',
   jumpToDateAfterMove: localStorage.getItem('jumpToDateAfterMove') === 'true',
-  user: null,
-  syncStatus: 'none',
-  neonConnectionString:
-    localStorage.getItem('neonConnectionString') ||
-    import.meta.env.VITE_NEON_CONNECTION_STRING ||
-    '',
 
   // View actions
   setSelectedDate: (date) => {
@@ -158,11 +139,5 @@ export const useUIStore = create<UIState>((set) => ({
   setJumpToDateAfterMove: (jumpToDateAfterMove) => {
     localStorage.setItem('jumpToDateAfterMove', String(jumpToDateAfterMove));
     set({ jumpToDateAfterMove });
-  },
-  setUser: (user) => set({ user }),
-  setSyncStatus: (syncStatus) => set({ syncStatus }),
-  setNeonConnectionString: (neonConnectionString) => {
-    localStorage.setItem('neonConnectionString', neonConnectionString);
-    set({ neonConnectionString });
   }
 }));

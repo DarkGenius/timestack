@@ -30,21 +30,19 @@ function wrapResponse<T>(fn: () => T): ApiResponse<T> {
 
 export function registerIpcHandlers(syncService: SyncService): void {
   // Auth handlers
-  ipcMain.handle(
-    'auth:setSession',
-    (_event, userId: string | null, connectionString: string | null) => {
-      return wrapResponse(async () => {
-        syncService.setUserId(userId);
-        if (userId && connectionString) {
-          await syncService.connect(connectionString);
-          await syncService.sync();
-        } else {
-          await syncService.disconnect();
-        }
-        return true;
-      });
-    }
-  );
+  ipcMain.handle('auth:setSession', (_event, userId: string | null) => {
+    return wrapResponse(async () => {
+      syncService.setUserId(userId);
+      if (userId) {
+        // Use internal connection string loaded in Main process
+        await syncService.connect();
+        await syncService.sync();
+      } else {
+        await syncService.disconnect();
+      }
+      return true;
+    });
+  });
 
   ipcMain.handle('auth:getSession', () => {
     // This is simplified; you might want to store this in a more persistent way

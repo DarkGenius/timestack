@@ -35,11 +35,8 @@ const tasksAPI = {
 };
 
 const authAPI = {
-  setSession: (
-    userId: string | null,
-    connectionString: string | null
-  ): Promise<ApiResponse<boolean>> =>
-    ipcRenderer.invoke('auth:setSession', userId, connectionString),
+  setSession: (userId: string | null): Promise<ApiResponse<boolean>> =>
+    ipcRenderer.invoke('auth:setSession', userId),
   getSession: (): Promise<ApiResponse<{ userId: string | null }>> =>
     ipcRenderer.invoke('auth:getSession')
 };

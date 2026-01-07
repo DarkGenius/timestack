@@ -4,6 +4,7 @@ import { dateTime, DateTime } from '@gravity-ui/date-utils';
 import { Gear } from '@gravity-ui/icons';
 import { FilterPanel } from './TaskList/FilterPanel';
 import { useUIStore } from '../store/uiStore';
+import { useAuthStore } from '../store/authStore';
 import { useTaskStore } from '../store/taskStore';
 import { Button } from './ui/Button';
 import { useTranslation } from 'react-i18next';
@@ -23,10 +24,9 @@ export const Sidebar = (): React.JSX.Element => {
     draggedTaskId,
     setIsTaskDragging,
     setDraggedTaskId,
-    jumpToDateAfterMove,
-    user,
-    syncStatus
+    jumpToDateAfterMove
   } = useUIStore();
+  const { user, syncStatus } = useAuthStore();
   const { updateTask, loadTasksByDate } = useTaskStore();
   const [isOver, setIsOver] = useState(false);
   const [focusedDate, setFocusedDate] = useState<Date>(new Date(selectedDate));
