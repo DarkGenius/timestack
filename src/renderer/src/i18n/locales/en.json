@@ -103,6 +103,8 @@
     "synced": "Synced",
     "syncing": "Syncing...",
     "none": "Local only",
-    "error": "Sync Error"
+    "error": "Sync Error",
+    "conflictTitle": "Sync Conflicts Detected",
+    "conflictMessage": "{{count}} task(s) could not be synced because they were modified on another device. Your local changes are preserved."
   }
 }

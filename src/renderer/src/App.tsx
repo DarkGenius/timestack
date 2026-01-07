@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider } from '@gravity-ui/uikit';
+import { ThemeProvider, useToaster } from '@gravity-ui/uikit';
 import '@gravity-ui/uikit/styles/styles.css';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './components/Sidebar';
@@ -12,7 +12,8 @@ import { onAuthStateChanged, auth } from './services/firebase';
 
 function App(): React.JSX.Element {
   const { theme, language } = useUIStore();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
+  const { add: addToast } = useToaster();
 
   // Sync language on mount
   React.useEffect(() => {
@@ -70,8 +71,30 @@ function App(): React.JSX.Element {
       if (userId) {
         setSyncStatus('syncing');
         try {
-          await window.api.auth.setSession(userId);
-          setSyncStatus('synced');
+          const response = await window.api.auth.setSession(userId);
+          if (response.success) {
+            // Check sync status for conflicts
+            const statusResponse = await window.api.sync.getStatus();
+            if (statusResponse.success && statusResponse.data?.lastResult) {
+              const { conflictCount } = statusResponse.data.lastResult;
+              if (conflictCount > 0) {
+                setSyncStatus('error');
+                addToast({
+                  name: 'sync-conflict',
+                  title: t('sync.conflictTitle'),
+                  content: t('sync.conflictMessage', { count: conflictCount }),
+                  theme: 'warning',
+                  autoHiding: 10000
+                });
+              } else {
+                setSyncStatus('synced');
+              }
+            } else {
+              setSyncStatus('synced');
+            }
+          } else {
+            setSyncStatus('error');
+          }
         } catch (error) {
           console.error('Auth sync failed:', error);
           setSyncStatus('error');
@@ -87,7 +110,7 @@ function App(): React.JSX.Element {
     };
 
     syncSession();
-  }, [userId, setSyncStatus]);
+  }, [userId, setSyncStatus, addToast, t]);
 
   return (
     <ThemeProvider theme={activeTheme}>
