@@ -13,7 +13,7 @@ import logo from '../assets/logo.png';
 
 export const Sidebar = (): React.JSX.Element => {
   const { t, i18n } = useTranslation();
-  const { selectedDate, setSelectedDate, openSettingsDialog, isTaskDragging, draggedTaskId, setIsTaskDragging, setDraggedTaskId } = useUIStore();
+  const { selectedDate, setSelectedDate, openSettingsDialog, isTaskDragging, draggedTaskId, setIsTaskDragging, setDraggedTaskId, jumpToDateAfterMove } = useUIStore();
   const { updateTask, loadTasksByDate } = useTaskStore();
   const [isOver, setIsOver] = useState(false);
   const [focusedDate, setFocusedDate] = useState<Date>(new Date(selectedDate));
@@ -101,7 +101,7 @@ export const Sidebar = (): React.JSX.Element => {
                 const dateStr = targetDate.format('YYYY-MM-DD');
                 await updateTask(taskId, { date: dateStr });
                 
-                if (useUIStore.getState().jumpToDateAfterMove) {
+                if (jumpToDateAfterMove) {
                   setSelectedDate(targetDate.toDate());
                   await loadTasksByDate(dateStr);
                 } else {
