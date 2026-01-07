@@ -86,6 +86,7 @@ export interface TaskFilters {
 export interface SyncResult {
   pulledCount: number;
   pushedCount: number;
+  conflictCount: number;
   timestamp: string;
 }
 

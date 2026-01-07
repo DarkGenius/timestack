@@ -224,6 +224,17 @@ export function markTasksAsSynced(ids: string[], userId: string): void {
   transaction(ids);
 }
 
+export function markTasksAsConflict(ids: string[], userId: string): void {
+  const db = getDatabase();
+  const stmt = db.prepare(
+    "UPDATE tasks SET sync_status = 'conflict' WHERE id = ? AND (user_id = ? OR user_id IS NULL)"
+  );
+  const transaction = db.transaction((taskIds: string[]) => {
+    for (const id of taskIds) stmt.run(id, userId);
+  });
+  transaction(ids);
+}
+
 export function upsertTasks(tasks: Task[]): void {
   const db = getDatabase();
   const stmt = db.prepare(`

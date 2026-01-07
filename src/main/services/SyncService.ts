@@ -1,5 +1,10 @@
 import { Client } from 'pg';
-import { getPendingTasks, markTasksAsSynced, upsertTasks } from '../database/queries';
+import {
+  getPendingTasks,
+  markTasksAsSynced,
+  markTasksAsConflict,
+  upsertTasks
+} from '../database/queries';
 import { Task, SyncResult, SyncProgress } from '../../shared/types';
 
 export class SyncService {
@@ -100,6 +105,7 @@ export class SyncService {
     const result: SyncResult = {
       pulledCount: 0,
       pushedCount: 0,
+      conflictCount: 0,
       timestamp: new Date().toISOString()
     };
 
@@ -110,11 +116,18 @@ export class SyncService {
       if (this.stopRequested) throw new Error('Sync cancelled by user');
       result.pulledCount = await this.pull();
 
-      // 2. Push local changes to Neon
+      // 2. Push local changes to Neon (with conflict detection)
       if (this.stopRequested) throw new Error('Sync cancelled by user');
-      result.pushedCount = await this.push();
+      const pushResult = await this.push();
+      result.pushedCount = pushResult.pushed;
+      result.conflictCount = pushResult.conflicts;
 
-      console.log('Sync completed successfully:', result);
+      if (result.conflictCount > 0) {
+        console.warn(`Sync completed with ${result.conflictCount} conflict(s)`);
+      } else {
+        console.log('Sync completed successfully:', result);
+      }
+
       this.lastResult = result;
       return result;
     } catch (error) {
@@ -161,13 +174,16 @@ export class SyncService {
     return remoteTasks.length;
   }
 
-  private async push(): Promise<number> {
-    if (!this.client || !this.currentUserId) return 0;
+  private async push(): Promise<{ pushed: number; conflicts: number }> {
+    if (!this.client || !this.currentUserId) return { pushed: 0, conflicts: 0 };
 
     const pendingTasks = getPendingTasks(this.currentUserId);
-    if (pendingTasks.length === 0) return 0;
+    if (pendingTasks.length === 0) return { pushed: 0, conflicts: 0 };
 
     let pushedCount = 0;
+    let conflictCount = 0;
+    const successfullyPushedIds: string[] = [];
+    const conflictIds: string[] = [];
 
     // Use transaction for atomicity and better performance
     await this.client.query('BEGIN');
@@ -175,7 +191,23 @@ export class SyncService {
       for (const task of pendingTasks) {
         if (this.stopRequested) break;
 
-        // Ensure user_id is set for the remote record
+        // Check if there's a conflict: remote version is newer than our local version
+        const remoteCheck = await this.client.query('SELECT updated_at FROM tasks WHERE id = $1', [
+          task.id
+        ]);
+
+        if (remoteCheck.rows.length > 0) {
+          const remoteUpdatedAt = remoteCheck.rows[0].updated_at as string;
+          if (remoteUpdatedAt > task.updated_at) {
+            // Conflict detected: remote is newer, don't overwrite
+            console.warn(`Conflict detected for task ${task.id}: remote is newer`);
+            conflictCount++;
+            conflictIds.push(task.id);
+            continue; // Skip this task, don't push
+          }
+        }
+
+        // No conflict, safe to push
         const taskWithUser = { ...task, user_id: this.currentUserId };
 
         await this.client.query(
@@ -200,7 +232,6 @@ export class SyncService {
             deleted_at = EXCLUDED.deleted_at,
             moved_from_date = EXCLUDED.moved_from_date,
             user_id = EXCLUDED.user_id
-          WHERE EXCLUDED.updated_at > tasks.updated_at
         `,
           [
             taskWithUser.id,
@@ -221,6 +252,7 @@ export class SyncService {
           ]
         );
         pushedCount++;
+        successfullyPushedIds.push(task.id);
       }
 
       await this.client.query('COMMIT');
@@ -229,10 +261,16 @@ export class SyncService {
       throw error;
     }
 
-    markTasksAsSynced(
-      pendingTasks.slice(0, pushedCount).map((t) => t.id),
-      this.currentUserId
-    );
-    return pushedCount;
+    // Mark successfully pushed tasks as synced
+    if (successfullyPushedIds.length > 0) {
+      markTasksAsSynced(successfullyPushedIds, this.currentUserId);
+    }
+
+    // Mark conflicting tasks with 'conflict' status
+    if (conflictIds.length > 0) {
+      markTasksAsConflict(conflictIds, this.currentUserId);
+    }
+
+    return { pushed: pushedCount, conflicts: conflictCount };
   }
 }
