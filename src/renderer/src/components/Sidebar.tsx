@@ -180,7 +180,9 @@ export const Sidebar = (): React.JSX.Element => {
                 </div>
               )}
               <div className="overflow-hidden">
-                <p className="text-sm font-medium truncate">{user.displayName || user.email}</p>
+                <p className="text-sm font-medium truncate">
+                  {user.displayName || user.email || t('auth.anonymous')}
+                </p>
                 <div className="flex items-center gap-1">
                   <span
                     className={`text-[10px] uppercase font-bold ${syncStatus === 'synced' ? 'text-green-500' : syncStatus === 'syncing' ? 'text-blue-500' : 'text-gray-400'}`}
@@ -198,7 +200,13 @@ export const Sidebar = (): React.JSX.Element => {
               </div>
             </div>
             <button
-              onClick={() => firebaseLogout()}
+              onClick={async () => {
+                try {
+                  await firebaseLogout();
+                } catch (error) {
+                  console.error('Logout failed:', error);
+                }
+              }}
               className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
               title={t('auth.logout')}
             >
@@ -209,7 +217,13 @@ export const Sidebar = (): React.JSX.Element => {
           <Button
             variant="outline"
             className="w-full mb-2 justify-center border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            onClick={() => signInWithGoogle()}
+            onClick={async () => {
+              try {
+                await signInWithGoogle();
+              } catch (error) {
+                console.error('Sign in failed:', error);
+              }
+            }}
           >
             <GoogleIcon className="w-4 h-4 mr-2" />
             {t('auth.login')}

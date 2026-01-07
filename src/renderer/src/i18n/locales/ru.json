@@ -97,7 +97,8 @@
   },
   "auth": {
     "login": "Войти через Google",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "anonymous": "Аноним"
   },
   "sync": {
     "synced": "Синхронизировано",
