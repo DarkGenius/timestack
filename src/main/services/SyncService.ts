@@ -10,7 +10,16 @@ export class SyncService {
   private lastResult?: SyncResult;
   private lastError?: string;
 
+  private static readonly CONNECTION_TIMEOUT_MS = 10000; // 10 seconds
+  private static readonly QUERY_TIMEOUT_MS = 30000; // 30 seconds
+  private static readonly MAX_RETRIES = 3;
+  private static readonly INITIAL_RETRY_DELAY_MS = 1000; // 1 second
+
   constructor(private connectionString: string) {}
+
+  private async delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   async connect(connString?: string): Promise<boolean> {
     const finalConnectionString = connString || this.connectionString;
@@ -18,18 +27,38 @@ export class SyncService {
       console.error('No connection string provided for SyncService');
       return false;
     }
-    try {
-      this.client = new Client({
-        connectionString: finalConnectionString,
-        ssl: { rejectUnauthorized: false } // Required for Neon
-      });
-      await this.client.connect();
-      return true;
-    } catch (error) {
-      console.error('Failed to connect to Neon:', error);
-      this.client = null;
-      return false;
+
+    let lastError: Error | null = null;
+
+    for (let attempt = 1; attempt <= SyncService.MAX_RETRIES; attempt++) {
+      try {
+        this.client = new Client({
+          connectionString: finalConnectionString,
+          ssl: { rejectUnauthorized: false }, // Required for Neon
+          connectionTimeoutMillis: SyncService.CONNECTION_TIMEOUT_MS,
+          query_timeout: SyncService.QUERY_TIMEOUT_MS
+        });
+        await this.client.connect();
+        console.log(`Connected to Neon database (attempt ${attempt})`);
+        return true;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        console.warn(
+          `Connection attempt ${attempt}/${SyncService.MAX_RETRIES} failed:`,
+          lastError.message
+        );
+        this.client = null;
+
+        if (attempt < SyncService.MAX_RETRIES) {
+          const delayMs = SyncService.INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+          console.log(`Retrying in ${delayMs}ms...`);
+          await this.delay(delayMs);
+        }
+      }
     }
+
+    console.error('Failed to connect to Neon after all retries:', lastError?.message);
+    return false;
   }
 
   async disconnect(): Promise<void> {
