@@ -8,9 +8,7 @@ import { useAuthStore } from '../store/authStore';
 import { useTaskStore } from '../store/taskStore';
 import { Button } from './ui/Button';
 import { useTranslation } from 'react-i18next';
-import { signInWithGoogle, logout as firebaseLogout } from '../services/firebase';
-import { ArrowRightFromSquare, ArrowRotateLeft } from '@gravity-ui/icons';
-import { GoogleIcon } from './ui';
+import { UserProfile } from './UserProfile';
 
 import logo from '../assets/logo.png';
 
@@ -165,70 +163,7 @@ export const Sidebar = (): React.JSX.Element => {
       </div>
 
       <div className="mt-auto pt-4 flex flex-col gap-2 border-t border-gray-100 dark:border-gray-700">
-        {user ? (
-          <div className="mb-2 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {user.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt={user.displayName || ''}
-                  className="w-8 h-8 rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                  {user.displayName?.[0] || 'U'}
-                </div>
-              )}
-              <div className="overflow-hidden">
-                <p className="text-sm font-medium truncate">
-                  {user.displayName || user.email || t('auth.anonymous')}
-                </p>
-                <div className="flex items-center gap-1">
-                  <span
-                    className={`text-[10px] uppercase font-bold ${syncStatus === 'synced' ? 'text-green-500' : syncStatus === 'syncing' ? 'text-blue-500' : 'text-gray-400'}`}
-                  >
-                    {syncStatus === 'synced'
-                      ? t('sync.synced')
-                      : syncStatus === 'syncing'
-                        ? t('sync.syncing')
-                        : t('sync.none')}
-                  </span>
-                  {syncStatus === 'syncing' && (
-                    <ArrowRotateLeft className="w-3 h-3 animate-spin text-blue-500" />
-                  )}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={async () => {
-                try {
-                  await firebaseLogout();
-                } catch (error) {
-                  console.error('Logout failed:', error);
-                }
-              }}
-              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-              title={t('auth.logout')}
-            >
-              <ArrowRightFromSquare className="w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          <Button
-            variant="outline"
-            className="w-full mb-2 justify-center border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-            onClick={async () => {
-              try {
-                await signInWithGoogle();
-              } catch (error) {
-                console.error('Sign in failed:', error);
-              }
-            }}
-          >
-            <GoogleIcon className="w-4 h-4 mr-2" />
-            {t('auth.login')}
-          </Button>
-        )}
+        <UserProfile user={user} syncStatus={syncStatus} />
 
         <Button
           variant="ghost"
