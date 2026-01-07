@@ -34,9 +34,10 @@ export const MoveToNextDayZone: React.FC = () => {
       
       if (useUIStore.getState().jumpToDateAfterMove) {
         setSelectedDate(nextDate);
+        await loadTasksByDate(nextDate);
+      } else {
+        await loadTasksByDate(selectedDate);
       }
-      
-      await loadTasksByDate(selectedDate);
     }
 
     setIsTaskDragging(false);

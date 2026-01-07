@@ -102,11 +102,12 @@ export const Sidebar = (): React.JSX.Element => {
                 await updateTask(taskId, { date: dateStr });
                 
                 if (useUIStore.getState().jumpToDateAfterMove) {
-                  setSelectedDate(dateStr);
+                  setSelectedDate(targetDate.toDate());
+                  await loadTasksByDate(dateStr);
+                } else {
+                  // Refresh the current view
+                  await loadTasksByDate(format(selectedDate, 'yyyy-MM-dd'));
                 }
-                
-                // Refresh the current view
-                await loadTasksByDate(format(selectedDate, 'yyyy-MM-dd'));
               }
             }
           }
