@@ -121,55 +121,65 @@ export class SyncService {
     if (pendingTasks.length === 0) return 0;
 
     let pushedCount = 0;
-    for (const task of pendingTasks) {
-      if (this.stopRequested) break;
 
-      // Ensure user_id is set for the remote record
-      const taskWithUser = { ...task, user_id: this.currentUserId };
+    // Use transaction for atomicity and better performance
+    await this.client.query('BEGIN');
+    try {
+      for (const task of pendingTasks) {
+        if (this.stopRequested) break;
 
-      await this.client.query(
-        `
-        INSERT INTO tasks (
-          id, title, description, date, priority, color, 
-          estimated_time, actual_time, status, completed_at, 
-          created_at, updated_at, deleted_at, moved_from_date, user_id
-        ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
-        ) ON CONFLICT (id) DO UPDATE SET
-          title = EXCLUDED.title,
-          description = EXCLUDED.description,
-          date = EXCLUDED.date,
-          priority = EXCLUDED.priority,
-          color = EXCLUDED.color,
-          estimated_time = EXCLUDED.estimated_time,
-          actual_time = EXCLUDED.actual_time,
-          status = EXCLUDED.status,
-          completed_at = EXCLUDED.completed_at,
-          updated_at = EXCLUDED.updated_at,
-          deleted_at = EXCLUDED.deleted_at,
-          moved_from_date = EXCLUDED.moved_from_date,
-          user_id = EXCLUDED.user_id
-        WHERE EXCLUDED.updated_at > tasks.updated_at
-      `,
-        [
-          taskWithUser.id,
-          taskWithUser.title,
-          taskWithUser.description,
-          taskWithUser.date,
-          taskWithUser.priority,
-          taskWithUser.color,
-          taskWithUser.estimated_time,
-          taskWithUser.actual_time,
-          taskWithUser.status,
-          taskWithUser.completed_at,
-          taskWithUser.created_at,
-          taskWithUser.updated_at,
-          taskWithUser.deleted_at,
-          taskWithUser.moved_from_date,
-          taskWithUser.user_id
-        ]
-      );
-      pushedCount++;
+        // Ensure user_id is set for the remote record
+        const taskWithUser = { ...task, user_id: this.currentUserId };
+
+        await this.client.query(
+          `
+          INSERT INTO tasks (
+            id, title, description, date, priority, color, 
+            estimated_time, actual_time, status, completed_at, 
+            created_at, updated_at, deleted_at, moved_from_date, user_id
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+          ) ON CONFLICT (id) DO UPDATE SET
+            title = EXCLUDED.title,
+            description = EXCLUDED.description,
+            date = EXCLUDED.date,
+            priority = EXCLUDED.priority,
+            color = EXCLUDED.color,
+            estimated_time = EXCLUDED.estimated_time,
+            actual_time = EXCLUDED.actual_time,
+            status = EXCLUDED.status,
+            completed_at = EXCLUDED.completed_at,
+            updated_at = EXCLUDED.updated_at,
+            deleted_at = EXCLUDED.deleted_at,
+            moved_from_date = EXCLUDED.moved_from_date,
+            user_id = EXCLUDED.user_id
+          WHERE EXCLUDED.updated_at > tasks.updated_at
+        `,
+          [
+            taskWithUser.id,
+            taskWithUser.title,
+            taskWithUser.description,
+            taskWithUser.date,
+            taskWithUser.priority,
+            taskWithUser.color,
+            taskWithUser.estimated_time,
+            taskWithUser.actual_time,
+            taskWithUser.status,
+            taskWithUser.completed_at,
+            taskWithUser.created_at,
+            taskWithUser.updated_at,
+            taskWithUser.deleted_at,
+            taskWithUser.moved_from_date,
+            taskWithUser.user_id
+          ]
+        );
+        pushedCount++;
+      }
+
+      await this.client.query('COMMIT');
+    } catch (error) {
+      await this.client.query('ROLLBACK');
+      throw error;
     }
 
     markTasksAsSynced(
