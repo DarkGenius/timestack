@@ -98,7 +98,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user, syncStatus }) =>
           <img src={user.photoURL} alt={user.displayName || ''} className="w-8 h-8 rounded-full" />
         ) : (
           <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-            {user.displayName?.[0] || 'U'}
+            {user.displayName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
           </div>
         )}
         <div className="overflow-hidden">
