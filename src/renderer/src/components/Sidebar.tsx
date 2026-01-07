@@ -7,7 +7,6 @@ import { useUIStore } from '../store/uiStore';
 import { useTaskStore } from '../store/taskStore';
 import { Button } from './ui/Button';
 import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
 
 import logo from '../assets/logo.png';
 
@@ -106,7 +105,7 @@ export const Sidebar = (): React.JSX.Element => {
                   await loadTasksByDate(dateStr);
                 } else {
                   // Refresh the current view
-                  await loadTasksByDate(format(selectedDate, 'yyyy-MM-dd'));
+                  await loadTasksByDate(dateTime({ input: selectedDate }).format('YYYY-MM-DD'));
                 }
               }
             }
