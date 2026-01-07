@@ -18,9 +18,9 @@ import type {
   ApiResponse
 } from '../../shared/types';
 
-function wrapResponse<T>(fn: () => T): ApiResponse<T> {
+async function wrapResponse<T>(fn: () => T | Promise<T>): Promise<ApiResponse<T>> {
   try {
-    const data = fn();
+    const data = await fn();
     return { success: true, data };
   } catch (error) {
     console.error('IPC Error:', error);
