@@ -92,8 +92,7 @@
       "en": "English",
       "ru": "Русский"
     },
-    "jumpToDateAfterMove": "Переходить к дате задачи при перемещении",
-    "neonConnectionString": "Строка подключения к Neon (PostgreSQL)"
+    "jumpToDateAfterMove": "Переходить к дате задачи при перемещении"
   },
   "auth": {
     "login": "Войти через Google",

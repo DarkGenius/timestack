@@ -90,8 +90,7 @@
       "en": "English",
       "ru": "Russian"
     },
-    "jumpToDateAfterMove": "Navigate to task date after move",
-    "neonConnectionString": "Neon Connection String (PostgreSQL)"
+    "jumpToDateAfterMove": "Navigate to task date after move"
   },
   "auth": {
     "login": "Sign in with Google",
