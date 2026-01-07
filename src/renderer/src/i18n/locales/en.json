@@ -95,7 +95,9 @@
   "auth": {
     "login": "Sign in with Google",
     "logout": "Sign out",
-    "anonymous": "Anonymous"
+    "anonymous": "Anonymous",
+    "signInError": "Sign in failed",
+    "logoutError": "Sign out failed"
   },
   "sync": {
     "synced": "Synced",

@@ -97,7 +97,9 @@
   "auth": {
     "login": "Войти через Google",
     "logout": "Выйти",
-    "anonymous": "Аноним"
+    "anonymous": "Аноним",
+    "signInError": "Ошибка входа",
+    "logoutError": "Ошибка выхода"
   },
   "sync": {
     "synced": "Синхронизировано",

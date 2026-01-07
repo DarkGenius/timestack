@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useToaster } from '@gravity-ui/uikit';
 import { ArrowRightFromSquare, ArrowRotateLeft } from '@gravity-ui/icons';
 import { Button } from './ui/Button';
 import { GoogleIcon } from './ui';
@@ -17,19 +18,72 @@ interface UserProfileProps {
 
 export const UserProfile: React.FC<UserProfileProps> = ({ user, syncStatus }) => {
   const { t } = useTranslation();
+  const { add: addToast } = useToaster();
+
+  const handleSignIn = async (): Promise<void> => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t('auth.signInError');
+      console.error('Sign in failed:', error);
+      addToast({
+        name: 'auth-error',
+        title: t('auth.signInError'),
+        content: message,
+        theme: 'danger',
+        autoHiding: 5000
+      });
+    }
+  };
+
+  const handleLogout = async (): Promise<void> => {
+    try {
+      await firebaseLogout();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t('auth.logoutError');
+      console.error('Logout failed:', error);
+      addToast({
+        name: 'logout-error',
+        title: t('auth.logoutError'),
+        content: message,
+        theme: 'danger',
+        autoHiding: 5000
+      });
+    }
+  };
+
+  const getSyncStatusClass = (): string => {
+    switch (syncStatus) {
+      case 'synced':
+        return 'text-green-500';
+      case 'syncing':
+        return 'text-blue-500';
+      case 'error':
+        return 'text-red-500';
+      default:
+        return 'text-gray-400';
+    }
+  };
+
+  const getSyncStatusText = (): string => {
+    switch (syncStatus) {
+      case 'synced':
+        return t('sync.synced');
+      case 'syncing':
+        return t('sync.syncing');
+      case 'error':
+        return t('sync.error');
+      default:
+        return t('sync.none');
+    }
+  };
 
   if (!user) {
     return (
       <Button
         variant="outline"
         className="w-full mb-2 justify-center border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-        onClick={async () => {
-          try {
-            await signInWithGoogle();
-          } catch (error) {
-            console.error('Sign in failed:', error);
-          }
-        }}
+        onClick={handleSignIn}
       >
         <GoogleIcon className="w-4 h-4 mr-2" />
         {t('auth.login')}
@@ -52,20 +106,8 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user, syncStatus }) =>
             {user.displayName || user.email || t('auth.anonymous')}
           </p>
           <div className="flex items-center gap-1">
-            <span
-              className={`text-[10px] uppercase font-bold ${
-                syncStatus === 'synced'
-                  ? 'text-green-500'
-                  : syncStatus === 'syncing'
-                    ? 'text-blue-500'
-                    : 'text-gray-400'
-              }`}
-            >
-              {syncStatus === 'synced'
-                ? t('sync.synced')
-                : syncStatus === 'syncing'
-                  ? t('sync.syncing')
-                  : t('sync.none')}
+            <span className={`text-[10px] uppercase font-bold ${getSyncStatusClass()}`}>
+              {getSyncStatusText()}
             </span>
             {syncStatus === 'syncing' && (
               <ArrowRotateLeft className="w-3 h-3 animate-spin text-blue-500" />
@@ -74,13 +116,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user, syncStatus }) =>
         </div>
       </div>
       <button
-        onClick={async () => {
-          try {
-            await firebaseLogout();
-          } catch (error) {
-            console.error('Logout failed:', error);
-          }
-        }}
+        onClick={handleLogout}
         className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
         title={t('auth.logout')}
         aria-label={t('auth.logout')}
