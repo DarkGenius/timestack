@@ -55,7 +55,7 @@ export interface CreateTaskInput {
   priority?: TaskPriority;
   color?: string;
   estimated_time?: number;
-  user_id?: string | null;
+  user_id?: string;
 }
 
 // Input for updating a task
@@ -69,7 +69,7 @@ export interface UpdateTaskInput {
   actual_time?: number | null;
   status?: TaskStatus;
   moved_from_date?: string | null;
-  user_id?: string | null;
+  user_id?: string;
 }
 
 // Filters for querying tasks
@@ -79,7 +79,7 @@ export interface TaskFilters {
   endDate?: string;
   status?: TaskStatus | 'all';
   priority?: TaskPriority | 'all';
-  user_id?: string | null;
+  user_id?: string;
 }
 
 // API response wrapper
