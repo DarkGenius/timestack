@@ -4,7 +4,9 @@ import type {
   UpdateTaskInput,
   TaskFilters,
   ApiResponse,
-  Task
+  Task,
+  SyncResult,
+  SyncProgress
 } from '../shared/types';
 
 interface TasksAPI {
@@ -25,7 +27,9 @@ interface AuthAPI {
 }
 
 interface SyncAPI {
-  syncNow: () => Promise<ApiResponse<void>>;
+  syncNow: () => Promise<ApiResponse<SyncResult>>;
+  getStatus: () => Promise<ApiResponse<SyncProgress>>;
+  cancel: () => Promise<ApiResponse<boolean>>;
 }
 
 interface API {

@@ -5,7 +5,9 @@ import type {
   UpdateTaskInput,
   TaskFilters,
   ApiResponse,
-  Task
+  Task,
+  SyncResult,
+  SyncProgress
 } from '../shared/types';
 
 // Tasks API for renderer
@@ -42,7 +44,9 @@ const authAPI = {
 };
 
 const syncAPI = {
-  syncNow: (): Promise<ApiResponse<void>> => ipcRenderer.invoke('sync:now')
+  syncNow: (): Promise<ApiResponse<SyncResult>> => ipcRenderer.invoke('sync:now'),
+  getStatus: (): Promise<ApiResponse<SyncProgress>> => ipcRenderer.invoke('sync:getStatus'),
+  cancel: (): Promise<ApiResponse<boolean>> => ipcRenderer.invoke('sync:cancel')
 };
 
 const configAPI = {

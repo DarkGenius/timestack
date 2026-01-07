@@ -54,6 +54,17 @@ export function registerIpcHandlers(syncService: SyncService): void {
     return wrapResponse(() => syncService.sync());
   });
 
+  ipcMain.handle('sync:getStatus', () => {
+    return wrapResponse(() => syncService.getSyncProgress());
+  });
+
+  ipcMain.handle('sync:cancel', () => {
+    return wrapResponse(() => {
+      syncService.cancelSync();
+      return true;
+    });
+  });
+
   // Create task
   ipcMain.handle('tasks:create', (_event, input: CreateTaskInput) => {
     return wrapResponse(() => createTask(input));

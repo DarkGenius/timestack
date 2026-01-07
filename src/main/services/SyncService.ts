@@ -1,11 +1,14 @@
 import { Client } from 'pg';
 import { getPendingTasks, markTasksAsSynced, upsertTasks } from '../database/queries';
-import { Task } from '../../shared/types';
+import { Task, SyncResult, SyncProgress } from '../../shared/types';
 
 export class SyncService {
   private client: Client | null = null;
   private currentUserId: string | null = null;
   private isSyncing = false;
+  private stopRequested = false;
+  private lastResult?: SyncResult;
+  private lastError?: string;
 
   constructor(private connectionString: string) {}
 
@@ -44,33 +47,61 @@ export class SyncService {
     return this.currentUserId;
   }
 
-  async sync(): Promise<void> {
-    if (this.isSyncing || !this.currentUserId || !this.client) return;
+  getSyncProgress(): SyncProgress {
+    return {
+      isSyncing: this.isSyncing,
+      lastResult: this.lastResult,
+      error: this.lastError
+    };
+  }
+
+  cancelSync(): void {
+    if (this.isSyncing) {
+      this.stopRequested = true;
+    }
+  }
+
+  async sync(): Promise<SyncResult | null> {
+    if (this.isSyncing || !this.currentUserId || !this.client) return null;
+
     this.isSyncing = true;
+    this.stopRequested = false;
+    this.lastError = undefined;
+
+    const result: SyncResult = {
+      pulledCount: 0,
+      pushedCount: 0,
+      timestamp: new Date().toISOString()
+    };
 
     try {
       console.log('Starting sync for user:', this.currentUserId);
 
       // 1. Pull changes from Neon
-      await this.pull();
+      if (this.stopRequested) throw new Error('Sync cancelled by user');
+      result.pulledCount = await this.pull();
 
       // 2. Push local changes to Neon
-      await this.push();
+      if (this.stopRequested) throw new Error('Sync cancelled by user');
+      result.pushedCount = await this.push();
 
-      console.log('Sync completed successfully');
+      console.log('Sync completed successfully:', result);
+      this.lastResult = result;
+      return result;
     } catch (error) {
-      console.error('Sync failed:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown sync error';
+      console.error('Sync failed:', errorMsg);
+      this.lastError = errorMsg;
+      throw error;
     } finally {
       this.isSyncing = false;
+      this.stopRequested = false;
     }
   }
 
-  private async pull(): Promise<void> {
-    if (!this.client || !this.currentUserId) return;
+  private async pull(): Promise<number> {
+    if (!this.client || !this.currentUserId) return 0;
 
-    // Get the last sync timestamp for this user from SQLite
-    // (Implementation detail: we can use a dedicated table or just query the max updated_at)
-    // For simplicity, let's just pull everything and let upsertTasks handle the timestamp logic (LWW)
     const res = await this.client.query(
       'SELECT * FROM tasks WHERE user_id = $1 OR user_id IS NULL',
       [this.currentUserId]
@@ -80,15 +111,19 @@ export class SyncService {
     if (remoteTasks.length > 0) {
       upsertTasks(remoteTasks);
     }
+    return remoteTasks.length;
   }
 
-  private async push(): Promise<void> {
-    if (!this.client || !this.currentUserId) return;
+  private async push(): Promise<number> {
+    if (!this.client || !this.currentUserId) return 0;
 
     const pendingTasks = getPendingTasks(this.currentUserId);
-    if (pendingTasks.length === 0) return;
+    if (pendingTasks.length === 0) return 0;
 
+    let pushedCount = 0;
     for (const task of pendingTasks) {
+      if (this.stopRequested) break;
+
       // Ensure user_id is set for the remote record
       const taskWithUser = { ...task, user_id: this.currentUserId };
 
@@ -134,8 +169,10 @@ export class SyncService {
           taskWithUser.user_id
         ]
       );
+      pushedCount++;
     }
 
-    markTasksAsSynced(pendingTasks.map((t) => t.id));
+    markTasksAsSynced(pendingTasks.slice(0, pushedCount).map((t) => t.id));
+    return pushedCount;
   }
 }

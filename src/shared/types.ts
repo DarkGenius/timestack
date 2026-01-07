@@ -82,6 +82,19 @@ export interface TaskFilters {
   user_id?: string;
 }
 
+// Sync Results and Progress
+export interface SyncResult {
+  pulledCount: number;
+  pushedCount: number;
+  timestamp: string;
+}
+
+export interface SyncProgress {
+  isSyncing: boolean;
+  lastResult?: SyncResult;
+  error?: string;
+}
+
 // API response wrapper
 export interface ApiResponse<T> {
   success: boolean;
