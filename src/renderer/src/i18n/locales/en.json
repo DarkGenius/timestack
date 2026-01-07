@@ -94,7 +94,7 @@
   },
   "auth": {
     "login": "Sign in with Google",
-    "logout": "Logout",
+    "logout": "Sign out",
     "anonymous": "Anonymous"
   },
   "sync": {
