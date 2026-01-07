@@ -46,29 +46,37 @@ function App(): React.JSX.Element {
 
   // Auth & Sync Initialization
   const { setUser, setSyncStatus } = useAuthStore();
+  // 1. Firebase Auth listener - set up once
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        const userData = {
+        setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
           photoURL: firebaseUser.photoURL
-        };
-        setUser(userData);
+        });
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, [setUser]);
 
-        // Notify Main Process and trigger initial sync
-        // Note: Connection string is now handled securely in Main process
+  // 2. Sync session with Main Process when user changes
+  const userId = useAuthStore((state) => state.user?.uid);
+  React.useEffect(() => {
+    const syncSession = async (): Promise<void> => {
+      if (userId) {
         setSyncStatus('syncing');
         try {
-          await window.api.auth.setSession(firebaseUser.uid);
+          await window.api.auth.setSession(userId);
           setSyncStatus('synced');
         } catch (error) {
           console.error('Auth sync failed:', error);
           setSyncStatus('error');
         }
       } else {
-        setUser(null);
         setSyncStatus('none');
         try {
           await window.api.auth.setSession(null);
@@ -76,10 +84,10 @@ function App(): React.JSX.Element {
           console.error('Sign-out sync failed:', error);
         }
       }
-    });
+    };
 
-    return () => unsubscribe();
-  }, [setUser, setSyncStatus]);
+    syncSession();
+  }, [userId, setSyncStatus]);
 
   return (
     <ThemeProvider theme={activeTheme}>
