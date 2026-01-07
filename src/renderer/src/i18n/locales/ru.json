@@ -91,6 +91,7 @@
     "languages": {
       "en": "English",
       "ru": "Русский"
-    }
+    },
+    "jumpToDateAfterMove": "Переходить к дате задачи при перемещении"
   }
 }

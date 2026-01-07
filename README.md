@@ -16,7 +16,12 @@ A modern task planner desktop application built with Electron, React, and TypeSc
   - Keyboard-friendly task creation and editing
   - Details: Description, Date, Priority (Low to Critical), Color, Time estimates
 - **Filters** - Filter tasks by status and priority directly from the sidebar
+- **Drag & Drop** - Easily reschedule tasks by dragging them to:
+  - Any day on the calendar sidebar (with visual highlighting)
+  - The "Next Day" zone below the task list
+- **Jump to Date** - Optional setting to automatically switch calendar view to the target date after moving a task
 - **Localization** - Automatic Russian and English language support
+- **Theme Support** - Light, Dark, and System theme support
 - **Local Storage** - SQLite database, works offline
 - **Cross-platform** - Windows and macOS support
 
@@ -124,9 +129,9 @@ The app detects system language automatically and supports Russian and English.
 ## Roadmap
 
 - [ ] S3 cloud synchronization
-- [ ] Drag & drop tasks between days
+- [x] Drag & drop tasks between days
 - [ ] Desktop notifications
-- [ ] Dark theme
+- [x] Dark theme
 - [ ] Statistics and reports
 - [ ] Recurring tasks
 - [ ] Subtasks / checklists

@@ -24,6 +24,7 @@ interface UIState {
   isSettingsDialogOpen: boolean;
   language: string;
   theme: 'light' | 'dark' | 'system';
+  jumpToDateAfterMove: boolean;
 
   // Actions
   setSelectedDate: (date: string | Date) => void;
@@ -50,6 +51,7 @@ interface UIState {
   closeSettingsDialog: () => void;
   setLanguage: (lang: string) => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  setJumpToDateAfterMove: (jump: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -70,6 +72,7 @@ export const useUIStore = create<UIState>((set) => ({
   isSettingsDialogOpen: false,
   language: localStorage.getItem('language') || 'en',
   theme: (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system',
+  jumpToDateAfterMove: localStorage.getItem('jumpToDateAfterMove') === 'true',
 
   // View actions
   setSelectedDate: (date) => {
@@ -132,5 +135,9 @@ export const useUIStore = create<UIState>((set) => ({
   setTheme: (theme) => {
     localStorage.setItem('theme', theme);
     set({ theme });
+  },
+  setJumpToDateAfterMove: (jumpToDateAfterMove) => {
+    localStorage.setItem('jumpToDateAfterMove', String(jumpToDateAfterMove));
+    set({ jumpToDateAfterMove });
   }
 }));

@@ -150,7 +150,7 @@ npm run typecheck    # TypeScript check
 ## Future Enhancements (Not Implemented)
 
 - S3 synchronization (tables ready: `sync_log`, `settings`)
-- Drag & drop between calendar days
 - Desktop notifications
-- Dark theme
 - Statistics dashboard
+- Recurring tasks
+- Subtasks / checklists

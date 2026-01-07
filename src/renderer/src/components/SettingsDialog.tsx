@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUIStore } from '../store/uiStore';
-import { SegmentedRadioGroup } from '@gravity-ui/uikit';
+import { SegmentedRadioGroup, Switch } from '@gravity-ui/uikit';
 import { Xmark } from '@gravity-ui/icons';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/Dialog';
 
 export const SettingsDialog = (): React.JSX.Element => {
   const { t, i18n } = useTranslation();
-  const { isSettingsDialogOpen, closeSettingsDialog, language, setLanguage, theme, setTheme } =
+  const { isSettingsDialogOpen, closeSettingsDialog, language, setLanguage, theme, setTheme, jumpToDateAfterMove, setJumpToDateAfterMove } =
     useUIStore();
 
   const handleLanguageChange = (value: string): void => {
@@ -62,6 +62,17 @@ export const SettingsDialog = (): React.JSX.Element => {
                 { value: 'dark', content: t('settings.themes.dark') },
                 { value: 'system', content: t('settings.themes.system') }
               ]}
+              size="l"
+            />
+          </div>
+
+          <div className="flex items-center justify-between py-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {t('settings.jumpToDateAfterMove')}
+            </label>
+            <Switch
+              checked={jumpToDateAfterMove}
+              onUpdate={setJumpToDateAfterMove}
               size="l"
             />
           </div>
