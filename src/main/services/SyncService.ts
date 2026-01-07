@@ -189,7 +189,11 @@ export class SyncService {
     await this.client.query('BEGIN');
     try {
       for (const task of pendingTasks) {
-        if (this.stopRequested) break;
+        if (this.stopRequested) {
+          // Rollback on cancellation to maintain consistency
+          await this.client.query('ROLLBACK');
+          throw new Error('Push cancelled by user');
+        }
 
         // Check if there's a conflict: remote version is newer than our local version
         const remoteCheck = await this.client.query('SELECT updated_at FROM tasks WHERE id = $1', [
