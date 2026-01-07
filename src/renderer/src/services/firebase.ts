@@ -8,15 +8,12 @@ import {
   User
 } from 'firebase/auth';
 
-// Firebase Configuration using environment variables
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
-};
+// Firebase Configuration loaded dynamically from Main process via Preload
+const firebaseConfig = window.api.config.firebase;
+
+if (!firebaseConfig.apiKey) {
+  console.warn('Firebase API Key is missing. Cloud features will not work.');
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

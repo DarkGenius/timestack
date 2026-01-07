@@ -16,7 +16,7 @@ import { registerIpcHandlers } from './ipc/handlers';
 import { WindowStateManager } from './window-state';
 import { SyncService } from './services/SyncService';
 
-const syncService = new SyncService(process.env.VITE_NEON_CONNECTION_STRING || '');
+const syncService = new SyncService(process.env.NEON_CONNECTION_STRING || '');
 
 const windowManager = new WindowStateManager('main', {
   width: 1200,

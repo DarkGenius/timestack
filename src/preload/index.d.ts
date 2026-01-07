@@ -32,6 +32,16 @@ interface API {
   tasks: TasksAPI;
   auth: AuthAPI;
   sync: SyncAPI;
+  config: {
+    firebase: {
+      apiKey: string;
+      authDomain: string;
+      projectId: string;
+      storageBucket: string;
+      messagingSenderId: string;
+      appId: string;
+    };
+  };
 }
 
 declare global {
