@@ -99,6 +99,18 @@ export class SyncService {
     }
   }
 
+  private isValidTask(row: unknown): row is Task {
+    if (typeof row !== 'object' || row === null) return false;
+    const r = row as Record<string, unknown>;
+    return (
+      typeof r.id === 'string' &&
+      typeof r.title === 'string' &&
+      typeof r.date === 'string' &&
+      typeof r.created_at === 'string' &&
+      typeof r.updated_at === 'string'
+    );
+  }
+
   private async pull(): Promise<number> {
     if (!this.client || !this.currentUserId) return 0;
 
@@ -107,7 +119,13 @@ export class SyncService {
       [this.currentUserId]
     );
 
-    const remoteTasks = res.rows as Task[];
+    // Validate remote tasks to prevent schema mismatch errors
+    const remoteTasks = res.rows.filter((row) => this.isValidTask(row)) as Task[];
+    const invalidCount = res.rows.length - remoteTasks.length;
+    if (invalidCount > 0) {
+      console.warn(`Skipped ${invalidCount} invalid task(s) from remote database`);
+    }
+
     if (remoteTasks.length > 0) {
       upsertTasks(remoteTasks);
     }
